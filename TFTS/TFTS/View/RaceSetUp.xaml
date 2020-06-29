@@ -21,7 +21,7 @@
                     <Label Grid.Row="0" Grid.Column="0" Text="Дистанция:" VerticalTextAlignment="Center"/>
                     <Entry Grid.Row="0" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" />
                     <Label Grid.Row="1" Grid.Column="0" Text="Длинна круга:"  VerticalTextAlignment="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapDistance}" />
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapLength}" />
 
                 </Grid>
             </StackLayout>
@@ -36,7 +36,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="+" Command="{Binding AddNewRunnerCommand}" HorizontalOptions="Center" />
-            <Button Text="Готово" Command="{Binding RaceCreatingDoneCommand}" HorizontalOptions="FillAndExpand"/>
+            <Button Text="Готово" Command="{Binding GoToRacePageCommand}" HorizontalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
