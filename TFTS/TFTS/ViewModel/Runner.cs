@@ -7,40 +7,47 @@ namespace TFTS.ViewModel
 {
     public struct Lap
     {
-        public int length { get; set; }
-        public TimeSpan time { get; set; }
-        public double speed { get => (double)length / time.TotalSeconds; }
+        public int Length { get; set; }
+        public TimeSpan Time { get; set; }
+        public double Speed { get => (double)Length / Time.TotalSeconds; }
     }
 
     public class Runner : INotifyPropertyChanged
     {
-        public string name {
+        private string name_ = "Runner";
+        public string Name {
             get
-            { return name; }
+            { return name_; }
             set
             {
-                name = value;
-                OnPropertyChanged(nameof(name));
+                name_ = value;
+                OnPropertyChanged(nameof(Name));
             }
         }
-        public List<Lap> laps = new List<Lap>();
+        public List<Lap> Laps { get; private set; } = new List<Lap>();
 
+        #region constuctors
         public Runner()
         {
         }
+        public Runner(string name)
+        {
+            Name = name;
+        }
+        #endregion
 
-        public int LapsOvercome { get => laps.Count; }
+        public int LapsOvercome { get => Laps.Count; }
         public string BestLapTime
         {
             get
             {
-                if (laps.Count == 0) return Utils.getStringFromTimeSpan(TimeSpan.Zero);
+                if (Laps.Count == 0) return Utils.getStringFromTimeSpan(TimeSpan.Zero);
                 TimeSpan best = TimeSpan.MaxValue;
-                foreach(Lap lap in laps)
+                foreach(Lap lap in Laps)
                 {
-                    if (lap.time < best)
+                    if (lap.Time < best)
                     {
-                        best = lap.time;
+                        best = lap.Time;
                     }
                 }
                 return Utils.getStringFromTimeSpan((best == TimeSpan.MaxValue) ? TimeSpan.Zero : best);
@@ -50,22 +57,22 @@ namespace TFTS.ViewModel
         {
             get
             {
-                if (laps.Count == 0) return "Н/С";
-                return Utils.getStringFromTimeSpan(laps[laps.Count - 1].time);
+                if (Laps.Count == 0) return "Н/С";
+                return Utils.getStringFromTimeSpan(Laps[Laps.Count - 1].Time);
             }
         }
 
 
         public void LapDone(Lap lap)
         {
-            laps.Add(lap);
+            Laps.Add(lap);
             OnPropertyChanged(nameof(LapsOvercome));
             OnPropertyChanged(nameof(BestLapTime));
             OnPropertyChanged(nameof(LastLapTime));
         }
         public void Clear()
         {
-            laps.Clear();
+            Laps.Clear();
             OnPropertyChanged(nameof(LapsOvercome));
             OnPropertyChanged(nameof(BestLapTime));
             OnPropertyChanged(nameof(LastLapTime));
