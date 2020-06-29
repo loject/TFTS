@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace TFTS.ViewModel
 {
@@ -15,15 +14,8 @@ namespace TFTS.ViewModel
     public class Runner : INotifyPropertyChanged
     {
         private string name_ = "Runner";
-        public string Name {
-            get
-            { return name_; }
-            set
-            {
-                name_ = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
+        private int lapsGoal_ = 0;
+        public string Name { get { return name_; } set { name_ = value; OnPropertyChanged(nameof(Name)); } }
         public List<Lap> Laps { get; private set; } = new List<Lap>();
 
         #region constuctors
@@ -34,22 +26,25 @@ namespace TFTS.ViewModel
         {
             Name = name;
         }
+        public Runner(string name, int lapsGoal)
+        {
+            Name = name;
+            lapsGoal_ = lapsGoal;
+        }
         #endregion
 
         public int LapsOvercome { get => Laps.Count; }
+        public string LapsLeft { get => (lapsGoal_ - Laps.Count).ToString(); }
+        public int LapsGoal { get => lapsGoal_; set { lapsGoal_ = value; OnPropertyChanged(nameof(LapsGoal)); } }
         public string BestLapTime
         {
             get
             {
-                if (Laps.Count == 0) return Utils.getStringFromTimeSpan(TimeSpan.Zero);
+                if (Laps.Count == 0) return "Н/С";
                 TimeSpan best = TimeSpan.MaxValue;
                 foreach(Lap lap in Laps)
-                {
                     if (lap.Time < best)
-                    {
                         best = lap.Time;
-                    }
-                }
                 return Utils.getStringFromTimeSpan((best == TimeSpan.MaxValue) ? TimeSpan.Zero : best);
             }
         }
