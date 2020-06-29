@@ -8,8 +8,8 @@
 
     <StackLayout>
         <StackLayout VerticalOptions="CenterAndExpand">
-            <Button Text="Темп" Clicked="BtnTempo_Clicked"/>
-            <Button Text="Работа" Clicked="BtnWork_ClickedAsync"/>
+            <Button Text="Забег" Clicked="BtnTempo_Clicked"/>
+            <Button Text="Табата" Clicked="BtnWork_ClickedAsync"/>
         </StackLayout>
     </StackLayout>
 

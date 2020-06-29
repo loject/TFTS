@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TFTS.ViewModel;
 using Xamarin.Forms;
 
 namespace TFTS
@@ -19,9 +20,9 @@ namespace TFTS
             InitializeComponent();
         }
 
-        private async void BtnTempo_Clicked(object sender, EventArgs e)
+        private void BtnTempo_Clicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
+            new Race(Navigation);
         }
 
         private async void BtnWork_ClickedAsync(object sender, EventArgs e)
