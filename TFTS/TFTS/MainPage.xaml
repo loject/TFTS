@@ -7,10 +7,10 @@
              x:Class="TFTS.MainPage">
 
     <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <StackLayout VerticalOptions="CenterAndExpand">
+            <Button Text="Темп" Clicked="BtnTempo_Clicked"/>
+            <Button Text="Работа" Clicked="BtnWork_ClickedAsync"/>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>
