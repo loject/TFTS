@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TFTS.View.RaceSetUp">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <StackLayout>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Text="Дистанция:" VerticalTextAlignment="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="Длинна круга:"  VerticalTextAlignment="Center"/>
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapDistance}" />
+
+                </Grid>
+            </StackLayout>
+
+            <ListView ItemsSource="{Binding Runners}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Entry HorizontalOptions="FillAndExpand" Text="{Binding Name}"/>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="+" Command="{Binding AddNewRunnerCommand}" HorizontalOptions="Center" />
+            <Button Text="Готово" Command="{Binding RaceCreatingDoneCommand}" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
