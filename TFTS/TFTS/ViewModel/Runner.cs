@@ -9,6 +9,7 @@ namespace TFTS.ViewModel
         public int Length { get; set; }
         public TimeSpan Time { get; set; }
         public double Speed { get => (double)Length / Time.TotalSeconds; }
+        public int Position { get; set; }
     }
 
     public class Runner : INotifyPropertyChanged
