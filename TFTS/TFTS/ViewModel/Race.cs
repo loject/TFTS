@@ -23,6 +23,7 @@ namespace TFTS.ViewModel
         public string TotalTime { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
         public float LapLength { get => lapLength_; set { lapLength_ = value; foreach (Runner runner in Runners) runner.LapsGoal = (int)LapsCount; OnPropertyChanged(nameof(LapLength)); } }
+        public string StartTime { get => startTime.ToString(); }
 
         #region constructors
         public Race(INavigation navigation)
