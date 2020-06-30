@@ -106,10 +106,13 @@ namespace TFTS.ViewModel
         {
             get => new Command<Runner>((Runner runner) =>
             {
+                int position = 1;
+                foreach (Runner runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
                 runner.LapDone(new Lap
                 {
                     Length = (int)LapLength,
-                    Time = timer_.Elapsed - runner.TotalTime
+                    Time = timer_.Elapsed - runner.TotalTime,
+                    Position = position
                 });
             });
         }
@@ -129,7 +132,7 @@ namespace TFTS.ViewModel
                 res += Runners[i].Name + ";";
                 for (int j = 0; j < Runners[i].Laps.Count; ++j)
                 {
-                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + "GetRunnerPositionOnLap(Runners[i], j + 1).ToString()" + ");";
+                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ");";
                 }
                 res += "\n";
             }
