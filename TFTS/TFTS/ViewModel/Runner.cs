@@ -8,6 +8,7 @@ namespace TFTS.ViewModel
     {
         public int Length { get; set; }
         public TimeSpan Time { get; set; }
+        public string TimeStr { get => Utils.getStringFromTimeSpan(Time); }
         public double Speed { get => (double)Length / Time.TotalSeconds; }
         public int Position { get; set; }
     }
