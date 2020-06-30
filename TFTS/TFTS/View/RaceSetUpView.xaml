@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Title="Формирование забега"
              x:Class="TFTS.View.RaceSetUpView">
     <ContentPage.Content>
         <StackLayout>
@@ -27,6 +28,9 @@
             </StackLayout>
 
             <ListView ItemsSource="{Binding Runners}">
+                <ListView.Header>
+                    <Label Text="Спортсмены" HorizontalOptions="CenterAndExpand"/>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
