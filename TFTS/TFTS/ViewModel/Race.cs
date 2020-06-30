@@ -120,7 +120,13 @@ namespace TFTS.ViewModel
             });
         }
         public ICommand ShowRunnerResultCommand { get => new Command<Runner>((Runner runner) => 
-        { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); }); }
+        { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
+        }
+        public ICommand DeleteLapCommand
+        {
+            get => new Command<Runner>((Runner runner) =>
+            { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
+        }
 
         #endregion
         #region misc

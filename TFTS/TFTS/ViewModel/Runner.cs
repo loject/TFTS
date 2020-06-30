@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace TFTS.ViewModel
@@ -18,7 +19,7 @@ namespace TFTS.ViewModel
         private string name_ = "Runner";
         private int lapsGoal_ = 0;
         public string Name { get { return name_; } set { name_ = value; OnPropertyChanged(nameof(Name)); } }
-        public List<Lap> Laps { get; private set; } = new List<Lap>();
+        public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
 
         #region constuctors
         public Runner()
@@ -64,6 +65,14 @@ namespace TFTS.ViewModel
         public void LapDone(Lap lap)
         {
             Laps.Add(lap);
+            OnPropertyChanged(nameof(LapsLeft));
+            OnPropertyChanged(nameof(LapsOvercome));
+            OnPropertyChanged(nameof(BestLapTime));
+            OnPropertyChanged(nameof(LastLapTime));
+        }
+        public void RemoveLap(int index)
+        {
+            Laps.RemoveAt(index);
             OnPropertyChanged(nameof(LapsLeft));
             OnPropertyChanged(nameof(LapsOvercome));
             OnPropertyChanged(nameof(BestLapTime));
