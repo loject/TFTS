@@ -38,7 +38,7 @@ namespace TFTS.ViewModel
             Navigation.PushAsync(new View.RaceSetUpView(this));
         }
         #endregion
-        #region command
+        #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
             get => new Command(() => Runners.Add(new Runner()));
@@ -57,6 +57,8 @@ namespace TFTS.ViewModel
                 };
             });
         }
+        #endregion
+        #region RaceViewCommands
         public ICommand StartStopCommand
         {
             get => new Command(() =>
@@ -116,6 +118,8 @@ namespace TFTS.ViewModel
                 });
             });
         }
+        public ICommand ShowRunnerResultCommand { get => new Command<Runner>((Runner runner) => 
+        { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); }); }
 
         #endregion
         #region misc
