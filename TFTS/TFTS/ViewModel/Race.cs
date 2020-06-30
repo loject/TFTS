@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
+using TFTS.View;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -101,6 +102,7 @@ namespace TFTS.ViewModel
                 Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
             });
         }
+        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new ResultsView(this)); }); }
         public ICommand LapDoneCommand
         {
             get => new Command<Runner>((Runner runner) =>
