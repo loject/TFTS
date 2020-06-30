@@ -63,6 +63,7 @@ namespace TFTS.ViewModel
         public void LapDone(Lap lap)
         {
             Laps.Add(lap);
+            OnPropertyChanged(nameof(LapsLeft));
             OnPropertyChanged(nameof(LapsOvercome));
             OnPropertyChanged(nameof(BestLapTime));
             OnPropertyChanged(nameof(LastLapTime));
@@ -70,6 +71,7 @@ namespace TFTS.ViewModel
         public void Clear()
         {
             Laps.Clear();
+            OnPropertyChanged(nameof(LapsLeft));
             OnPropertyChanged(nameof(LapsOvercome));
             OnPropertyChanged(nameof(BestLapTime));
             OnPropertyChanged(nameof(LastLapTime));
