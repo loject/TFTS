@@ -103,7 +103,7 @@ namespace TFTS.ViewModel
                 Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
             });
         }
-        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new ResultsView(this)); }); }
+        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this)); }); }
         public ICommand LapDoneCommand
         {
             get => new Command<Runner>((Runner runner) =>
