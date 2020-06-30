@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:TFTS.View"
+             mc:Ignorable="d"
+             x:Class="TFTS.View.RunnerResultView">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:IndexFromListConverter x:Key="IndexFromListConverter"/>
+            <local:TotalTimeConverter x:Key="TotalTimeConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="{Binding About} " FontSize="20"/>
+            <ListView ItemsSource="{Binding Runner.Laps}" SelectionMode="None" HasUnevenRows="True" x:Name="LapsListView">
+                <ListView.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Круг" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="1" Text="Время круга" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="2" Text="Общее время" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                        <Label Grid.Column="3" Text="Позиция" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                    </Grid>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding ., Converter={StaticResource IndexFromListConverter}, ConverterParameter={x:Reference LapsListView}}" 
+                                       TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                                <Label Grid.Column="1" Text="{Binding TimeStr}" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                                <Label Grid.Column="2" Text="{Binding ., Converter={StaticResource TotalTimeConverter}, ConverterParameter={x:Reference LapsListView}}" 
+                                       TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                                <Label Grid.Column="3" Text="{Binding Position}" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
