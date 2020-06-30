@@ -64,7 +64,13 @@
                                 </Grid.ColumnDefinitions>
                                 <Button Grid.Column="0" Text="{Binding Name}" 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
-                                        CommandParameter="{Binding .}"/>
+                                        CommandParameter="{Binding .}">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsRunning}" Value="False">
+                                            <Setter Property="Command" Value="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowRunnerResultCommand}"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
                                 <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
                                         VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
                                 <Label  Grid.Column="2" Text="{Binding BestLapTime}" 
