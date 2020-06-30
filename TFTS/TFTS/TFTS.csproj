@@ -16,16 +16,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="View\RaceResultsView.xaml.cs">
+      <DependentUpon>RaceResultsView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="View\RaceSetUpView.xaml.cs">
       <DependentUpon>RaceSetUpView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="View\RaceResultsView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="View\RaceSetUpView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\RaceView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="View\RunnerResultView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
