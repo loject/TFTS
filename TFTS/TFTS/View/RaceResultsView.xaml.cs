@@ -25,7 +25,7 @@ namespace TFTS.View
                 if (a.LapsOvercome == 0 && b.LapsOvercome == 0)
                     return 0;
                 if (a.LapsOvercome != b.LapsOvercome)
-                    return (a.LapsOvercome > a.LapsOvercome) ? 1 : -1;
+                    return (a.LapsOvercome > a.LapsOvercome) ? -1 : 1;
                 if (a.Laps[a.Laps.Count - 1].Time != b.Laps[b.Laps.Count - 1].Time)
                     return (a.Laps[a.Laps.Count - 1].Time > b.Laps[b.Laps.Count - 1].Time) ? 1 : -1;
                 return 0;
@@ -35,7 +35,9 @@ namespace TFTS.View
             grid.Children.Add(GetLabelWithText("Общее время"), (int)race.LapsCount + 1, 0);
             for (int i = 1; i <= tmp.Count; ++i)
             {
-                grid.Children.Add(GetLabelWithText(tmp[i - 1].Name), 0, i);
+                string positionOnFinish = "Н/Ф";
+                if (tmp[i - 1].Laps.Count >= race.LapsCount) positionOnFinish = tmp[i - 1].Laps[(int)race.LapsCount - 1].Position.ToString();
+                grid.Children.Add(GetLabelWithText(tmp[i - 1].Name + "(" + positionOnFinish + ")"), 0, i);
                 for (int j = 1; j <= race.LapsCount; ++j)
                 {
                     if (tmp[i - 1].Laps.Count >= j)
