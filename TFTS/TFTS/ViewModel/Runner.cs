@@ -56,6 +56,7 @@ namespace TFTS.ViewModel
                 return Utils.getStringFromTimeSpan(Laps[Laps.Count - 1].Time);
             }
         }
+        public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Laps) res += lap.Time; return res; } }
 
 
         public void LapDone(Lap lap)
