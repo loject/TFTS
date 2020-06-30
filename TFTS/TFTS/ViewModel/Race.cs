@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModel
@@ -93,6 +94,13 @@ namespace TFTS.ViewModel
                 }
             });
         }
+        public ICommand ExportCommand
+        {
+            get => new Command(() =>
+            {
+                Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+            });
+        }
         public ICommand LapDoneCommand
         {
             get => new Command<Runner>((Runner runner) =>
@@ -104,7 +112,29 @@ namespace TFTS.ViewModel
                 });
             });
         }
-        
+
+        #endregion
+        #region misc
+        private string GetRaceResultCSV()
+        {
+            string res = "";
+            res += "Забег на " + Distance + "метров. Начало " + DateTime.Now.ToString() + "\n";
+            res += "Спортсмен\\Время круга(позиция);";
+            for (int i = 1; i <= Runners[0].Laps.Count; ++i) res += i.ToString() + ";";
+            res += "\n";
+
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                res += Runners[i].Name + ";";
+                for (int j = 0; j < Runners[i].Laps.Count; ++j)
+                {
+                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + "GetRunnerPositionOnLap(Runners[i], j + 1).ToString()" + ");";
+                }
+                res += "\n";
+            }
+
+            return res;
+        }
         #endregion
         #region INotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
