@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:TFTS.misc"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TFTS.View.RaceView">
     
@@ -14,15 +14,13 @@
     <ContentPage.Content>
         <StackLayout>
             <StackLayout Orientation="Horizontal" >
-                <Button FontSize="13" WidthRequest="67">
+                <Button FontSize="13" WidthRequest="67" Command="{Binding StartStopCommand}">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding IsRunning}" Value="False">
                             <Setter Property="Text" Value="Старт"/>
-                            <Setter Property="Command" Value="{Binding StartCommand}" />
                         </DataTrigger>
                         <DataTrigger TargetType="Button" Binding="{Binding IsRunning}" Value="True">
                             <Setter Property="Text" Value="Пауза"/>
-                            <Setter Property="Command" Value="{Binding StopCommand}" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
@@ -64,7 +62,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Button Grid.Column="0" Text="{Binding Name}" 
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.NameBtnCommand}"
                                         CommandParameter="{Binding .}"/>
                                 <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
                                         VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
