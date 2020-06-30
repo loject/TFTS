@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
-using System.Threading;
 using System.Windows.Input;
 using TFTS.View;
 using Xamarin.Essentials;
@@ -18,6 +15,7 @@ namespace TFTS.ViewModel
         public ObservableCollection<Runner> Runners { get; private set; }
         private float distance_ = 3000;
         private float lapLength_ = 200;
+        private DateTime startTime = new DateTime();
         private Stopwatch timer_ = new Stopwatch();
 
         public float Distance { get => distance_; set { distance_ = value; OnPropertyChanged(nameof(Distance)); } }
@@ -69,6 +67,7 @@ namespace TFTS.ViewModel
                 }
                 else
                 {
+                    if (timer_.ElapsedMilliseconds == 0) startTime = DateTime.Now;
                     timer_.Start();
                     Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
                     {
@@ -120,7 +119,7 @@ namespace TFTS.ViewModel
         private string GetRaceResultCSV()
         {
             string res = "";
-            res += "Забег на " + Distance + "метров. Начало " + DateTime.Now.ToString() + "\n";
+            res += "Забег на " + Distance + "метров. Начало " + startTime + "\n";
             res += "Спортсмен\\Время круга(позиция);";
             for (int i = 1; i <= Runners[0].Laps.Count; ++i) res += i.ToString() + ";";
             res += "\n";
