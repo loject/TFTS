@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace TFTS.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RaceSetUp : ContentPage
+    public partial class RaceSetUpView : ContentPage
     {
-        public RaceSetUp(Race race)
+        public RaceSetUpView(Race race)
         {
             InitializeComponent();
             BindingContext = race;

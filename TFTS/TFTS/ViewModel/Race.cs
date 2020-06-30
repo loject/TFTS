@@ -35,7 +35,7 @@ namespace TFTS.ViewModel
             };
 
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceSetUp(this));
+            Navigation.PushAsync(new View.RaceSetUpView(this));
         }
         #endregion
         #region command
