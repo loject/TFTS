@@ -30,8 +30,8 @@ namespace TFTS.ViewModel
 
             Runners = new ObservableCollection<Runner>
             {
-                new Runner(),
-                new Runner(),
+                new Runner("Runner", (int)LapsCount),
+                new Runner("Runner", (int)LapsCount),
             };
 
             Navigation = navigation;
@@ -41,7 +41,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new Runner()));
+            get => new Command(() => Runners.Add(new Runner("Runner", (int)LapsCount)));
         }
         public ICommand GoToRacePageCommand
         {
