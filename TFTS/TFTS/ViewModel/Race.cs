@@ -51,6 +51,9 @@ namespace TFTS.ViewModel
             {
                 try
                 {
+                    foreach (var i in Runners)
+                        if (i.Name == "")
+                            Runners.Remove(i);
                     Navigation.PushAsync(new View.RaceView(this));
                     Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
                 }
