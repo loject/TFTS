@@ -158,5 +158,8 @@ namespace TFTS.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
+        #region settings
+        public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
+        #endregion
     }
 }
