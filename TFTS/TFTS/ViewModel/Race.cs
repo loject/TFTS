@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 using TFTS.View;
 using Xamarin.Essentials;
@@ -102,6 +103,23 @@ namespace TFTS.ViewModel
             get => new Command(() =>
             {
                 Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+            });
+        }
+        public ICommand ExportFileCommand
+        {
+            get => new Command(() =>
+            {
+                try
+                {
+                    var fn = "TFTS_" + DateTime.Now.ToString() + ".csv";
+                    var file = Path.Combine(FileSystem.CacheDirectory, fn);
+                    File.WriteAllText(file, GetRaceResultCSV());
+                    Share.RequestAsync(new ShareFileRequest(file: new ShareFile(file), title: fn));
+                }
+                catch
+                {
+                    /* TODO: error massage */
+                }
             });
         }
         public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this)); }); }
