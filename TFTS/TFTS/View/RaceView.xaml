@@ -6,6 +6,80 @@
              Title="Забег"
              mc:Ignorable="d"
              x:Class="TFTS.View.RaceView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="LapDoneBySwipeOn">
+                <ViewCell>
+                    <SwipeView>
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
+                                                    CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem Text="Убрать круг" BackgroundColor="LightPink" 
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteLapCommand}"
+                                                    CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="{Binding Name}"
+                                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
+                            <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
+                                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
+                            <Label  Grid.Column="2" Text="{Binding BestLapTime}" 
+                                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label  Grid.Column="3" Text="{Binding LastLapTime}" 
+                                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label  Grid.Column="4" Text="{Binding LapsOvercome}" 
+                                                    VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
+                        </Grid>
+                    </SwipeView>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="LapDoneBySwipeOFF">
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Text="{Binding Name}" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
+                                                CommandParameter="{Binding .}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsRunning}" Value="False">
+                                    <Setter Property="Command" Value="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowRunnerResultCommand}"/>
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
+                                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
+                        <Label  Grid.Column="2" Text="{Binding BestLapTime}" 
+                                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                        <Label  Grid.Column="3" Text="{Binding LastLapTime}" 
+                                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                        <Label  Grid.Column="4" Text="{Binding LapsOvercome}" 
+                                                VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Результаты" Command="{Binding ShowResultPageCommand}" Priority="1" Order="Secondary"/>
@@ -34,7 +108,7 @@
                        VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
             </StackLayout>
 
-            <ListView ItemsSource="{Binding Runners}" SelectionMode="None">
+            <ListView x:Name="RunnersList" ItemsSource="{Binding Runners}" SelectionMode="None" ItemTemplate="{StaticResource LapDoneBySwipeOn}">
                 <ListView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -51,47 +125,11 @@
                         <Label Grid.Column="4" Text="ПРБ" TextColor="DarkGray" HorizontalTextAlignment="Center"/>
                     </Grid>
                 </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <SwipeView>
-                                <SwipeView.LeftItems>
-                                    <SwipeItems Mode="Execute">
-                                        <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
-                                            CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <SwipeView.RightItems>
-                                    <SwipeItems Mode="Execute">
-                                        <SwipeItem Text="Убрать круг" BackgroundColor="LightPink" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteLapCommand}"
-                                            CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Text="{Binding Name}" 
-                                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
-                                    <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
-                                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
-                                    <Label  Grid.Column="2" Text="{Binding BestLapTime}" 
-                                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                                    <Label  Grid.Column="3" Text="{Binding LastLapTime}" 
-                                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                                    <Label  Grid.Column="4" Text="{Binding LapsOvercome}" 
-                                            VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
-                                </Grid>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                <ListView.Triggers>
+                    <DataTrigger TargetType="ListView" Binding="{Binding LapDoneBySwipe}" Value="false">
+                        <Setter Property="ItemTemplate" Value="{StaticResource LapDoneBySwipeOFF}"/>
+                    </DataTrigger>
+                </ListView.Triggers>
             </ListView>
         </StackLayout>
     </ContentPage.Content>

@@ -18,7 +18,7 @@ namespace TFTS.ViewModel
         private DateTime startTime = new DateTime();
         private Stopwatch timer_ = new Stopwatch();
 
-        public float Distance { get => distance_; set { distance_ = value; foreach (Runner runner in Runners) runner.LapsGoal = (int)LapsCount; OnPropertyChanged(nameof(Distance)); } }
+        public float Distance { get => distance_; set { distance_ = value; foreach (Runner runner in Runners) runner.LapsGoal = (int)LapsCount;  OnPropertyChanged(nameof(Distance)); } }
         public float LapsCount { get => distance_ / lapLength_; }
         public string TotalTime { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
@@ -157,6 +157,9 @@ namespace TFTS.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion
+        #region settings
+        public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
         #endregion
     }
 }
