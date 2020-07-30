@@ -77,7 +77,7 @@
                                         <ColumnDefinition Width="2*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Text="{Binding Name}" 
+                                    <Label Grid.Column="0" Text="{Binding Name}"
                                             VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
                                     <Label  Grid.Column="1" Text="{Binding LapsLeft}" 
                                             VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="25"/>
