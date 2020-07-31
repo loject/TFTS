@@ -19,11 +19,12 @@ namespace TFTS.ViewModel
         private DateTime startTime = new DateTime();
         private Stopwatch timer_ = new Stopwatch();
 
-        public float Distance { get => distance_; set { distance_ = value; foreach (Runner runner in Runners) runner.LapsGoal = (int)LapsCount;  OnPropertyChanged(nameof(Distance)); } }
+        public float Distance { get => distance_; set { distance_ = value; OnPropertyChanged(nameof(Distance)); } }
         public float LapsCount { get => distance_ / lapLength_; }
         public string TotalTime { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
-        public float LapLength { get => lapLength_; set { lapLength_ = value; foreach (Runner runner in Runners) runner.LapsGoal = (int)LapsCount; OnPropertyChanged(nameof(LapLength)); } }
+        public float LapLength { get => lapLength_; set { lapLength_ = value; OnPropertyChanged(nameof(LapLength)); } }
+        public bool UnevenLaps { get => distance_ % lapLength_ != 0; }
         public string StartTime { get => startTime.ToString(); }
 
         #region constructors
@@ -32,8 +33,8 @@ namespace TFTS.ViewModel
 
             Runners = new ObservableCollection<Runner>
             {
-                new Runner("Runner", (int)LapsCount),
-                new Runner("Runner", (int)LapsCount),
+                new Runner("Runner", this),
+                new Runner("Runner1", this),
             };
 
             Navigation = navigation;
@@ -43,7 +44,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new Runner("Runner", (int)LapsCount)));
+            get => new Command(() => Runners.Add(new Runner("Runner", this)));
         }
         public ICommand GoToRacePageCommand
         {
@@ -130,23 +131,51 @@ namespace TFTS.ViewModel
         {
             get => new Command<Runner>((Runner runner) =>
             {
-                int position = 1;
-                foreach (Runner runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
-                runner.LapDone(new Lap
+                try
                 {
-                    Length = (int)LapLength,
-                    Time = timer_.Elapsed - runner.TotalTime,
-                    Position = position
-                });
+                    int position = 1;
+                    foreach (Runner runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
+                    float lapLength = lapLength_;
+                    if (UnevenLaps)
+                    {
+                        if (FirstLapAlwaysFull && runner.LapsLeft < 1 && runner.LapsLeft > 0
+                            || !FirstLapAlwaysFull && runner.LapsOvercome == 0)
+                        {
+                            lapLength = Distance % LapLength;
+                        }
+                    }
+                    runner.LapDone(new Lap
+                    {
+                        Length = lapLength,
+                        Time = timer_.Elapsed - runner.TotalTime,
+                        Position = position
+                    });
+                }
+                catch
+                {
+                    /* TODO: error massage */
+                }
+            },
+            (Runner runner) =>
+            {
+                try
+                {
+                    return runner.LapsLeft > 0;
+                }
+                catch
+                {
+                    /* TODO: error massage */
+                }
+                return false;
             });
         }
-        public ICommand ShowRunnerResultCommand { get => new Command<Runner>((Runner runner) => 
-        { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
+        public ICommand ShowRunnerResultCommand 
+        { 
+            get => new Command<Runner>((Runner runner) => { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
         }
         public ICommand DeleteLapCommand
         {
-            get => new Command<Runner>((Runner runner) =>
-            { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
+            get => new Command<Runner>((Runner runner) => { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
         }
 
         #endregion
@@ -164,7 +193,7 @@ namespace TFTS.ViewModel
                 res += Runners[i].Name + ";";
                 for (int j = 0; j < Runners[i].Laps.Count; ++j)
                 {
-                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ");";
+                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")" + System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
                 }
                 res += "\n";
             }
@@ -181,6 +210,7 @@ namespace TFTS.ViewModel
         #endregion
         #region settings
         public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
+        public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
         #endregion
     }
 }
