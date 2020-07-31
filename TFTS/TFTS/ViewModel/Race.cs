@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
+using TFTS.misc;
 using TFTS.View;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -13,7 +14,7 @@ namespace TFTS.ViewModel
     public class Race : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        public ObservableCollection<Runner> Runners { get; private set; }
+        public SortableObservableCollection<Runner> Runners { get; private set; }
         private float distance_ = 3000;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
@@ -31,7 +32,7 @@ namespace TFTS.ViewModel
         public Race(INavigation navigation)
         {
 
-            Runners = new ObservableCollection<Runner>
+            Runners = new SortableObservableCollection<Runner>
             {
                 new Runner("Runner", this),
                 new Runner("Runner1", this),
@@ -150,6 +151,18 @@ namespace TFTS.ViewModel
                         Time = timer_.Elapsed - runner.TotalTime,
                         Position = position
                     });
+
+                    Runners.Sort(new Comparison<Runner>((a, b) => {
+                        if (a.Laps.Count > b.Laps.Count)
+                            return -1;
+                        if (a.Laps.Count < b.Laps.Count)
+                            return 1;
+                        if (a.Laps.Count == 0)
+                            return 0;
+                        int lastLapId = a.Laps.Count - 1;
+                        if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
+                        return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
+                    }));
                 }
                 catch
                 {
