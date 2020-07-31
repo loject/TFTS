@@ -2,22 +2,24 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using Xamarin.Essentials;
 
 namespace TFTS.ViewModel
 {
     public struct Lap
     {
-        public int Length { get; set; }
+        public float Length { get; set; }
         public TimeSpan Time { get; set; }
         public string TimeStr { get => Utils.getStringFromTimeSpan(Time); }
-        public double Speed { get => (double)Length / Time.TotalSeconds; }
+        public double Speed { get => Length / Time.TotalSeconds; }
         public int Position { get; set; }
     }
 
     public class Runner : INotifyPropertyChanged
     {
         private string name_ = "Runner";
-        private int lapsGoal_ = 0;
+        private Race race_;
         public string Name { get { return name_; } set { name_ = value; OnPropertyChanged(nameof(Name)); } }
         public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
 
@@ -29,16 +31,17 @@ namespace TFTS.ViewModel
         {
             Name = name;
         }
-        public Runner(string name, int lapsGoal)
+        public Runner(string name, Race race)
         {
             Name = name;
-            lapsGoal_ = lapsGoal;
+            race_ = race;
         }
         #endregion
 
-        public int LapsOvercome { get => Laps.Count; }
-        public string LapsLeft { get => (lapsGoal_ - Laps.Count).ToString(); }
-        public int LapsGoal { get => lapsGoal_; set { lapsGoal_ = value; OnPropertyChanged(nameof(LapsGoal)); } }
+        public float LapsOvercome { get => DistanceOvercome / race_.LapLength; }
+        public float DistanceLeft { get => race_.Distance - DistanceOvercome; }
+        public float LapsLeft { get => DistanceLeft / race_.LapLength; }
+        public float LapsGoal { get => race_.Distance / race_.LapLength; }
         public string BestLapTime
         {
             get
@@ -60,6 +63,7 @@ namespace TFTS.ViewModel
             }
         }
         public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Laps) res += lap.Time; return res; } }
+        public float DistanceOvercome { get => Laps.Sum(lap => lap.Length); }
 
 
         public void LapDone(Lap lap)

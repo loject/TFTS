@@ -8,6 +8,7 @@
              x:Class="TFTS.View.SettingView">
     <ContentPage.Content>
         <ScrollView VerticalOptions="Start" Padding="10">
+            <!-- TODO: fix this layout -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -16,6 +17,8 @@
                 <Label Grid.Column="0" Grid.Row="0" Text="Управление" FontSize="Title" />
                 <Label Grid.Column="0" Grid.Row="1" Text="Завершение круга по свайпу" TextColor="Black" FontSize="Medium" />
                 <Switch Grid.Column="1" Grid.Row="1" IsToggled="{Binding LapDoneBySwipe}"/>
+                <Label Grid.Column="0" Grid.Row="2" Text="Первый круг всегда полный(если количество кругов не целое)" TextColor="Black" FontSize="Medium" />
+                <Switch Grid.Column="1" Grid.Row="2" IsToggled="{Binding FirstLapAlwaysFull}"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>
