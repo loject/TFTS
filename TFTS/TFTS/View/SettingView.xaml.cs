@@ -37,5 +37,15 @@ namespace TFTS.View
                 OnPropertyChanged(nameof(FirstLapAlwaysFull));
             }
         }
+
+        public bool SortBest
+        {
+            get => Preferences.Get(nameof(SortBest), true);
+            set
+            {
+                Preferences.Set(nameof(SortBest), value);
+                OnPropertyChanged(nameof(SortBest));
+            }
+        }
     }
 }

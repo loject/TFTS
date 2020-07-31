@@ -14,11 +14,23 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" Text="Управление" FontSize="Title" />
                 <Label Grid.Column="0" Grid.Row="1" Text="Завершение круга по свайпу" TextColor="Black" FontSize="Medium" />
                 <Switch Grid.Column="1" Grid.Row="1" IsToggled="{Binding LapDoneBySwipe}"/>
                 <Label Grid.Column="0" Grid.Row="2" Text="Первый круг всегда полный(если количество кругов не целое)" TextColor="Black" FontSize="Medium" />
                 <Switch Grid.Column="1" Grid.Row="2" IsToggled="{Binding FirstLapAlwaysFull}"/>
+                <Label Grid.Column="0" Grid.Row="3" Text="Сортировка лучших" TextColor="Black" FontSize="Medium" />
+                <Switch Grid.Column="1" Grid.Row="3" IsToggled="{Binding SortBest}"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>

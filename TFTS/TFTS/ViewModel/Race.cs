@@ -152,17 +152,20 @@ namespace TFTS.ViewModel
                         Position = position
                     });
 
-                    Runners.Sort(new Comparison<Runner>((a, b) => {
-                        if (a.Laps.Count > b.Laps.Count)
-                            return -1;
-                        if (a.Laps.Count < b.Laps.Count)
-                            return 1;
-                        if (a.Laps.Count == 0)
-                            return 0;
-                        int lastLapId = a.Laps.Count - 1;
-                        if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
-                        return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
-                    }));
+                    if (SortBest)
+                    {
+                        Runners.Sort(new Comparison<Runner>((a, b) => {
+                            if (a.Laps.Count > b.Laps.Count)
+                                return -1;
+                            if (a.Laps.Count < b.Laps.Count)
+                                return 1;
+                            if (a.Laps.Count == 0)
+                                return 0;
+                            int lastLapId = a.Laps.Count - 1;
+                            if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
+                            return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
+                        }));
+                    }
                 }
                 catch
                 {
@@ -229,6 +232,7 @@ namespace TFTS.ViewModel
         #region settings
         public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
         public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
+        public bool SortBest { get => Preferences.Get(nameof(SortBest), false); }
         #endregion
     }
 }
