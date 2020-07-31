@@ -182,18 +182,23 @@ namespace TFTS.ViewModel
         #region misc
         private string GetRaceResultCSV()
         {
+            string separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+
             string res = "";
-            res += "Забег на " + Distance + "метров. Начало " + startTime + "\n";
-            res += "Спортсмен\\Время круга(позиция);";
-            for (int i = 1; i <= Runners[0].Laps.Count; ++i) res += i.ToString() + ";";
+            res += "Время начала" + separator + startTime + "\n";
+            res += "Дистанция" + separator + Distance.ToString() + "\n";
+            res += "Длинна круга" + separator + LapLength.ToString() + "\n";
+            res += "Спортсмен\\Время круга(позиция)" + separator;
+
+            for (int i = 1; i <= LapsCount; ++i) res += i.ToString() + separator; 
             res += "\n";
 
             for (int i = 0; i < Runners.Count; ++i)
             {
-                res += Runners[i].Name + ";";
+                res += Runners[i].Name + separator;
                 for (int j = 0; j < Runners[i].Laps.Count; ++j)
                 {
-                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")" + System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")" + separator;
                 }
                 res += "\n";
             }
