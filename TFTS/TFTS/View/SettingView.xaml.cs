@@ -28,5 +28,14 @@ namespace TFTS.View
                 OnPropertyChanged(nameof(LapDoneBySwipe));
             }
         }
+        public bool FirstLapAlwaysFull
+        {
+            get => Preferences.Get(nameof(FirstLapAlwaysFull), true);
+            set
+            {
+                Preferences.Set(nameof(FirstLapAlwaysFull), value);
+                OnPropertyChanged(nameof(FirstLapAlwaysFull));
+            }
+        }
     }
 }
