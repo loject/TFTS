@@ -84,8 +84,8 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Результаты" Command="{Binding ShowResultPageCommand}" Priority="1" Order="Secondary"/>
         <ToolbarItem Text="Сброс" Command="{Binding ResetCommand}" Priority="1" Order="Secondary"/>
-        <ToolbarItem Text="Export" Command="{Binding ExportCommand}"  Priority="1" Order="Secondary"/>
-        <ToolbarItem Text="Export File" Command="{Binding ExportFileCommand}"  Priority="1" Order="Secondary"/>
+        <ToolbarItem Text="Export text" Command="{Binding ExportCommand}"  Priority="1" Order="Secondary"/>
+        <ToolbarItem Text="Export Excel" Command="{Binding ExportXLSXFileCommand}"  Priority="1" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>

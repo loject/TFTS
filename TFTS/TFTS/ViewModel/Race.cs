@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -112,16 +115,21 @@ namespace TFTS.ViewModel
                 Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
             });
         }
-        public ICommand ExportFileCommand
+        public ICommand ExportXLSXFileCommand
         {
             get => new Command(() =>
             {
                 try
                 {
-                    var fn = "TFTS_" + DateTime.Now.ToString() + ".csv";
+                    var fn = "TFTS_" + DateTime.Now.ToString() + ".xlsx";
                     var file = Path.Combine(FileSystem.CacheDirectory, fn);
-                    File.WriteAllText(file, GetRaceResultCSV());
+                    var xlsx = GetRaceResultXLSX();
+                    xlsx.Write(File.Create(file));
                     Share.RequestAsync(new ShareFileRequest(file: new ShareFile(file), title: fn));
+                }
+                catch (Exception e)
+                {
+                    Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Error", e.Message, "OK");
                 }
                 catch
                 {
@@ -234,6 +242,30 @@ namespace TFTS.ViewModel
             }
 
             return res;
+        }
+        public IWorkbook GetRaceResultXLSX()
+        {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet("sheet1");
+
+            sheet.CreateRow(0).CreateCell(0).SetCellValue("Начало");          sheet.GetRow(0).CreateCell(1).SetCellValue(startTime);
+            sheet.CreateRow(1).CreateCell(0).SetCellValue("Дистанция");       sheet.GetRow(1).CreateCell(1).SetCellValue(Distance);
+            sheet.CreateRow(2).CreateCell(0).SetCellValue("Длинна круга");    sheet.GetRow(2).CreateCell(1).SetCellValue(LapLength);
+            sheet.CreateRow(3).CreateCell(0).SetCellValue("Спортсмен\\Время круга(позиция)");
+
+            /* TODO: replace this with overome distance */
+            for (int i = 1; i <= LapsCount; ++i) sheet.GetRow(3).CreateCell(i).SetCellValue(i);
+            sheet.GetRow(3).CreateCell(i).SetCellValue("Общее время");
+
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                sheet.CreateRow(5 + i).CreateCell(0).SetCellValue(Runners[i].Name);
+                for (int j = 0; j < Runners[i].Laps.Count; ++j)
+                    sheet.GetRow(5 + i).CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
+                sheet.CreateRow(5 + i).CreateCell(0).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
+            }
+
+            return workbook;
         }
         #endregion
         #region INotifyPropertyChanged interface implement
