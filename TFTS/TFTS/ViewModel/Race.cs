@@ -255,7 +255,7 @@ namespace TFTS.ViewModel
 
             /* TODO: replace this with overome distance */
             for (int i = 1; i <= LapsCount; ++i) sheet.GetRow(3).CreateCell(i).SetCellValue(i);
-            sheet.GetRow(3).CreateCell(i).SetCellValue("Общее время");
+            sheet.GetRow(3).CreateCell((int)Math.Ceiling(LapsCount) + 1).SetCellValue("Общее время");
 
             for (int i = 0; i < Runners.Count; ++i)
             {
