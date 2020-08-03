@@ -248,7 +248,7 @@ namespace TFTS.ViewModel
             XSSFWorkbook workbook = new XSSFWorkbook();
             ISheet sheet = workbook.CreateSheet("sheet1");
 
-            sheet.CreateRow(0).CreateCell(0).SetCellValue("Начало");          sheet.GetRow(0).CreateCell(1).SetCellValue(startTime);
+            sheet.CreateRow(0).CreateCell(0).SetCellValue("Начало");          sheet.GetRow(0).CreateCell(1).SetCellValue(startTime.ToString());
             sheet.CreateRow(1).CreateCell(0).SetCellValue("Дистанция");       sheet.GetRow(1).CreateCell(1).SetCellValue(Distance);
             sheet.CreateRow(2).CreateCell(0).SetCellValue("Длинна круга");    sheet.GetRow(2).CreateCell(1).SetCellValue(LapLength);
             sheet.CreateRow(3).CreateCell(0).SetCellValue("Спортсмен\\Время круга(позиция)");
@@ -259,10 +259,11 @@ namespace TFTS.ViewModel
 
             for (int i = 0; i < Runners.Count; ++i)
             {
-                sheet.CreateRow(4 + i).CreateCell(0).SetCellValue(Runners[i].Name);
+                var row = sheet.CreateRow(4 + i);
+                row.CreateCell(0).SetCellValue(Runners[i].Name);
                 for (int j = 0; j < Runners[i].Laps.Count; ++j)
-                    sheet.GetRow(4 + i).CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
-                sheet.CreateRow(4 + i).CreateCell(0).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
+                    row.CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
+                row.CreateCell((int)Math.Ceiling(LapsCount) + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
             }
 
             return workbook;
