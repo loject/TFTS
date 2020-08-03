@@ -10,6 +10,7 @@
         <StackLayout VerticalOptions="CenterAndExpand">
             <Button Text="Забег" Clicked="BtnTempo_Clicked"/>
             <Button Text="Табата" Clicked="BtnWork_ClickedAsync"/>
+            <Button Text="Настройки" Clicked="BtnSettings_Clicked"/>
         </StackLayout>
     </StackLayout>
 

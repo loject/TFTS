@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TFTS.View;
 using TFTS.ViewModel;
 using Xamarin.Forms;
 
@@ -28,6 +29,11 @@ namespace TFTS
         private async void BtnWork_ClickedAsync(object sender, EventArgs e)
         {
             await DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
+        }
+
+        private void BtnSettings_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new SettingView());
         }
     }
 }
