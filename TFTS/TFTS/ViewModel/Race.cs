@@ -36,6 +36,8 @@ namespace TFTS.ViewModel
             {
                 new Runner("Runner", this),
                 new Runner("Runner1", this),
+                new Runner("Runner2", this),
+                new Runner("Runner3", this),
             };
 
             Navigation = navigation;
@@ -154,13 +156,25 @@ namespace TFTS.ViewModel
 
                     if (SortBest)
                     {
+                        /* greater - faster */
                         Runners.Sort(new Comparison<Runner>((a, b) => {
-                            if (a.Laps.Count > b.Laps.Count)
-                                return -1;
-                            if (a.Laps.Count < b.Laps.Count)
-                                return 1;
-                            if (a.Laps.Count == 0)
+                            if (a.LapsOvercome != b.LapsOvercome)
+                            {
+                                if (MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
+                                {
+                                    if (a.IsFinished && !b.IsFinished)
+                                        return 1;
+                                    if (!a.IsFinished && b.IsFinished)
+                                        return -1;
+                                }
+                                if (a.LapsOvercome > b.LapsOvercome)
+                                    return -1;
+                                if (a.LapsOvercome < b.LapsOvercome)
+                                    return 1;
+                            }
+                            if (a.LapsOvercome == 0)
                                 return 0;
+
                             int lastLapId = a.Laps.Count - 1;
                             if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
                             return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
@@ -233,6 +247,7 @@ namespace TFTS.ViewModel
         public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
         public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
         public bool SortBest { get => Preferences.Get(nameof(SortBest), false); }
+        public bool MoveFinishedToEnd { get => Preferences.Get(nameof(MoveFinishedToEnd), false); }
         #endregion
     }
 }

@@ -47,5 +47,15 @@ namespace TFTS.View
                 OnPropertyChanged(nameof(SortBest));
             }
         }
+
+        public bool MoveFinishedToEnd
+        {
+            get => Preferences.Get(nameof(MoveFinishedToEnd), true);
+            set
+            {
+                Preferences.Set(nameof(MoveFinishedToEnd), value);
+                OnPropertyChanged(nameof(MoveFinishedToEnd));
+            }
+        }
     }
 }

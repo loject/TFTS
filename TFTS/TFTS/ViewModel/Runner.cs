@@ -64,7 +64,7 @@ namespace TFTS.ViewModel
         }
         public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Laps) res += lap.Time; return res; } }
         public float DistanceOvercome { get => Laps.Sum(lap => lap.Length); }
-
+        public bool IsFinished { get => LapsOvercome >= LapsGoal; }
 
         public void LapDone(Lap lap)
         {
