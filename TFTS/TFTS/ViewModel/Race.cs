@@ -259,10 +259,10 @@ namespace TFTS.ViewModel
 
             for (int i = 0; i < Runners.Count; ++i)
             {
-                sheet.CreateRow(5 + i).CreateCell(0).SetCellValue(Runners[i].Name);
+                sheet.CreateRow(4 + i).CreateCell(0).SetCellValue(Runners[i].Name);
                 for (int j = 0; j < Runners[i].Laps.Count; ++j)
-                    sheet.GetRow(5 + i).CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
-                sheet.CreateRow(5 + i).CreateCell(0).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
+                    sheet.GetRow(4 + i).CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
+                sheet.CreateRow(4 + i).CreateCell(0).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
             }
 
             return workbook;
