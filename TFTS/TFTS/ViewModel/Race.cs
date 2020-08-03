@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
+using TFTS.misc;
 using TFTS.View;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -13,7 +14,7 @@ namespace TFTS.ViewModel
     public class Race : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        public ObservableCollection<Runner> Runners { get; private set; }
+        public SortableObservableCollection<Runner> Runners { get; private set; }
         private float distance_ = 3000;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
@@ -31,10 +32,12 @@ namespace TFTS.ViewModel
         public Race(INavigation navigation)
         {
 
-            Runners = new ObservableCollection<Runner>
+            Runners = new SortableObservableCollection<Runner>
             {
                 new Runner("Runner", this),
                 new Runner("Runner1", this),
+                new Runner("Runner2", this),
+                new Runner("Runner3", this),
             };
 
             Navigation = navigation;
@@ -150,6 +153,33 @@ namespace TFTS.ViewModel
                         Time = timer_.Elapsed - runner.TotalTime,
                         Position = position
                     });
+
+                    if (SortBest)
+                    {
+                        /* greater - faster */
+                        Runners.Sort(new Comparison<Runner>((a, b) => {
+                            if (a.LapsOvercome != b.LapsOvercome)
+                            {
+                                if (MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
+                                {
+                                    if (a.IsFinished && !b.IsFinished)
+                                        return 1;
+                                    if (!a.IsFinished && b.IsFinished)
+                                        return -1;
+                                }
+                                if (a.LapsOvercome > b.LapsOvercome)
+                                    return -1;
+                                if (a.LapsOvercome < b.LapsOvercome)
+                                    return 1;
+                            }
+                            if (a.LapsOvercome == 0)
+                                return 0;
+
+                            int lastLapId = a.Laps.Count - 1;
+                            if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
+                            return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
+                        }));
+                    }
                 }
                 catch
                 {
@@ -216,6 +246,8 @@ namespace TFTS.ViewModel
         #region settings
         public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
         public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
+        public bool SortBest { get => Preferences.Get(nameof(SortBest), false); }
+        public bool MoveFinishedToEnd { get => Preferences.Get(nameof(MoveFinishedToEnd), false); }
         #endregion
     }
 }
