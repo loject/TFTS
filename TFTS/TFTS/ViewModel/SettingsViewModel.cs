@@ -51,6 +51,15 @@ namespace TFTS.ViewModel
                 OnPropertyChanged(nameof(LeftHandMode));
             }
         }
+        public bool VibrationOnLapDone
+        {
+            get => Preferences.Get(nameof(VibrationOnLapDone), true);
+            set
+            {
+                Preferences.Set(nameof(VibrationOnLapDone), value);
+                OnPropertyChanged(nameof(VibrationOnLapDone));
+            }
+        }
 
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;

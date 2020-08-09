@@ -25,5 +25,9 @@ namespace TFTS.Model
         {
             get => Preferences.Get(nameof(LeftHandMode), true);
         }
+        public static bool VibrationOnLapDone
+        {
+            get => Preferences.Get(nameof(VibrationOnLapDone), true);
+        }
     }
 }

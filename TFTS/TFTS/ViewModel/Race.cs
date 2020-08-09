@@ -196,6 +196,10 @@ namespace TFTS.ViewModel
                             return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
                         }));
                     }
+                    if (SettingsModel.VibrationOnLapDone)
+                    {
+                        Vibration.Vibrate();
+                    }
                 }
                 catch
                 {
@@ -350,3 +354,4 @@ namespace TFTS.ViewModel
 /* TODO: add vibration */
 /* same name runners */
 /* optimize lapDoneCommand */
+/* dont turn off screen */

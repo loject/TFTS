@@ -41,6 +41,8 @@
                 </Switch>
                 <Label Grid.Column="0" Grid.Row="5" Text="Режим левши" TextColor="Black" FontSize="Medium" />
                 <Switch Grid.Column="1" Grid.Row="5" IsToggled="{Binding LeftHandMode}"/>
+                <Label Grid.Column="0" Grid.Row="6" Text="Вибрировать при завершении круга" TextColor="Black" FontSize="Medium" />
+                <Switch Grid.Column="1" Grid.Row="6" IsToggled="{Binding VibrationOnLapDone}"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>
