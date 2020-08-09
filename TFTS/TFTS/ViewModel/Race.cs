@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using TFTS.misc;
+using TFTS.Model;
 using TFTS.View;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -149,8 +150,8 @@ namespace TFTS.ViewModel
                     float lapLength = lapLength_;
                     if (UnevenLaps)
                     {
-                        if (FirstLapAlwaysFull && runner.LapsLeft < 1 && runner.LapsLeft > 0
-                            || !FirstLapAlwaysFull && runner.LapsOvercome == 0)
+                        if (SettingsModel.FirstLapAlwaysFull && runner.LapsLeft < 1 && runner.LapsLeft > 0
+                            || !SettingsModel.FirstLapAlwaysFull && runner.LapsOvercome == 0)
                         {
                             lapLength = Distance % LapLength;
                         }
@@ -162,13 +163,13 @@ namespace TFTS.ViewModel
                         Position = position
                     });
 
-                    if (SortBest)
+                    if (SettingsModel.SortBest)
                     {
                         /* greater - faster */
                         Runners.Sort(new Comparison<Runner>((a, b) => {
                             if (a.LapsOvercome != b.LapsOvercome)
                             {
-                                if (MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
+                                if (SettingsModel.MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
                                 {
                                     if (a.IsFinished && !b.IsFinished)
                                         return 1;
@@ -276,11 +277,7 @@ namespace TFTS.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-        #region settings
-        public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
-        public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
-        public bool SortBest { get => Preferences.Get(nameof(SortBest), false); }
-        public bool MoveFinishedToEnd { get => Preferences.Get(nameof(MoveFinishedToEnd), false); }
-        #endregion
     }
 }
+
+/* TODO: add vibration */

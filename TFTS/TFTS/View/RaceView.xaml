@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:TFTS.Model"
              Title="Забег"
              mc:Ignorable="d"
              x:Class="TFTS.View.RaceView">
@@ -127,7 +128,7 @@
                     </Grid>
                 </ListView.Header>
                 <ListView.Triggers>
-                    <DataTrigger TargetType="ListView" Binding="{Binding LapDoneBySwipe}" Value="false">
+                    <DataTrigger TargetType="ListView" Binding="{Binding Source={x:Static local:SettingsModel.LapDoneBySwipe}}" Value="false">
                         <Setter Property="ItemTemplate" Value="{StaticResource LapDoneBySwipeOFF}"/>
                     </DataTrigger>
                 </ListView.Triggers>
