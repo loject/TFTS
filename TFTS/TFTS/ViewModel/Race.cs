@@ -65,8 +65,15 @@ namespace TFTS.ViewModel
                     Navigation.PushAsync(new View.RaceView(this));
                     Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
                 }
+                catch (Exception e)
+                {
+                    /* TODO: log the error */
+                    Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
+                }
                 catch
                 {
+                    /* TODO: log the error */
+                    Console.WriteLine("Error while executing - GoToRacePageCommand");
                 };
             });
         }
@@ -281,3 +288,5 @@ namespace TFTS.ViewModel
 }
 
 /* TODO: add vibration */
+/* check picker */
+/* same name runners */

@@ -1,4 +1,5 @@
-﻿using Xamarin.Essentials;
+﻿using NPOI.HSSF.Record;
+using Xamarin.Essentials;
 
 namespace TFTS.Model
 {
@@ -19,6 +20,10 @@ namespace TFTS.Model
         public static bool MoveFinishedToEnd
         {
             get => Preferences.Get(nameof(MoveFinishedToEnd), true);
+        }
+        public static bool LeftHandMode
+        {
+            get => Preferences.Get(nameof(LeftHandMode), true);
         }
     }
 }

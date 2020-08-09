@@ -42,6 +42,15 @@ namespace TFTS.ViewModel
                 OnPropertyChanged(nameof(MoveFinishedToEnd));
             }
         }
+        public bool LeftHandMode
+        {
+            get => Preferences.Get(nameof(LeftHandMode), false);
+            set
+            {
+                Preferences.Set(nameof(LeftHandMode), value);
+                OnPropertyChanged(nameof(LeftHandMode));
+            }
+        }
 
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;

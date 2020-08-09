@@ -39,6 +39,8 @@
                         </DataTrigger>
                     </Switch.Triggers>
                 </Switch>
+                <Label Grid.Column="0" Grid.Row="5" Text="Режим левши" TextColor="Black" FontSize="Medium" />
+                <Switch Grid.Column="1" Grid.Row="5" IsToggled="{Binding LeftHandMode}"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>
