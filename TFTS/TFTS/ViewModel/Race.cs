@@ -19,7 +19,7 @@ namespace TFTS.ViewModel
     {
         private INavigation Navigation;
         public SortableObservableCollection<Runner> Runners { get; private set; }
-        private float distance_ = 3000;
+        private float distance_ = 1500;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
         private Stopwatch timer_ = new Stopwatch();
@@ -259,19 +259,79 @@ namespace TFTS.ViewModel
             sheet.CreateRow(0).CreateCell(0).SetCellValue("Начало");          sheet.GetRow(0).CreateCell(1).SetCellValue(startTime.ToString());
             sheet.CreateRow(1).CreateCell(0).SetCellValue("Дистанция");       sheet.GetRow(1).CreateCell(1).SetCellValue(Distance);
             sheet.CreateRow(2).CreateCell(0).SetCellValue("Длинна круга");    sheet.GetRow(2).CreateCell(1).SetCellValue(LapLength);
-            sheet.CreateRow(3).CreateCell(0).SetCellValue("Спортсмен\\Время круга(позиция)");
 
+            int RowId = 4;
+            /* laps times */
             /* TODO: replace this with overome distance */
-            for (int i = 1; i <= LapsCount; ++i) sheet.GetRow(3).CreateCell(i).SetCellValue(i);
-            sheet.GetRow(3).CreateCell((int)Math.Ceiling(LapsCount) + 1).SetCellValue("Общее время");
+            int CeilLapsCount = (int)Math.Ceiling(LapsCount);
+            sheet.CreateRow(RowId).CreateCell(0).SetCellValue("Спортсмен");
+            /* TODO: fix this check */
+            if (SettingsModel.FirstLapAlwaysFull)
+            {
+                for (float i = 1; i < CeilLapsCount; ++i)
+                {
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i) - 1).SetCellValue($"Время {i}-го круга");
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i)).SetCellValue($"Позиция на {i}-ом круге");
+                }
+                sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount - 1).SetCellValue($"Время {LapsCount}-го круга");
+                sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount).SetCellValue($"Позиция на {LapsCount}-ом круге");
+            }
+            else
+            {
+                var FirstLapRatio = (Distance % LapLength == 0) ? 1 : (Distance % LapLength) / LapLength;
+                for (float i = FirstLapRatio; i <= CeilLapsCount; ++i)
+                {
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i) - 1).SetCellValue($"Время {i}-го круга");
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i)).SetCellValue($"Позиция на {i}-ом круге");
+                }
+            }
+            sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount + 1).SetCellValue("Общее время");
+            RowId++;
 
             for (int i = 0; i < Runners.Count; ++i)
             {
-                var row = sheet.CreateRow(4 + i);
+                var CurrentRow = sheet.CreateRow(RowId);
+                CurrentRow.CreateCell(0).SetCellValue(Runners[i].Name);
+                for (int j = 1; j <= Runners[i].Laps.Count; ++j)
+                {
+                    CurrentRow.CreateCell(2 * j - 1).SetCellValue(Runners[i].Laps[j - 1].Time.ToString());
+                    CurrentRow.CreateCell(2 * j).SetCellValue(Runners[i].Laps[j - 1].Position);
+                }
+                CurrentRow.CreateCell(2 * CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
+                RowId++;
+            }
+
+            /* overcome times */
+            /* TODO: replace this with overome distance */
+            RowId += 3;
+            sheet.CreateRow(RowId).CreateCell(0).SetCellValue("Спортсмен");
+            /* TODO: fix this check */
+            if (SettingsModel.FirstLapAlwaysFull)
+            {
+                for (float i = 1; i <= CeilLapsCount; ++i)
+                    sheet.GetRow(RowId).CreateCell((int)Math.Ceiling(i)).SetCellValue($"{i}-й круг");
+                sheet.GetRow(RowId).CreateCell(CeilLapsCount).SetCellValue($"{LapsCount}-й круг");
+            }
+            else
+            {
+                var FirstLapRatio = (Distance % LapLength == 0) ? 1 : (Distance % LapLength) / LapLength;
+                for (float i = FirstLapRatio; i <= CeilLapsCount; ++i)
+                    sheet.GetRow(RowId).CreateCell((int)Math.Ceiling(i)).SetCellValue($"{i}-й круг");
+            }
+            sheet.GetRow(RowId).CreateCell(CeilLapsCount + 1).SetCellValue("Общее время");
+            RowId++;
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                var row = sheet.CreateRow(RowId);
+                var time = TimeSpan.Zero;
                 row.CreateCell(0).SetCellValue(Runners[i].Name);
-                for (int j = 0; j < Runners[i].Laps.Count; ++j)
-                    row.CreateCell(j + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")");
-                row.CreateCell((int)Math.Ceiling(LapsCount) + 1).SetCellValue(Utils.getStringFromTimeSpan(Runners[i].TotalTime));
+                for (int j = 1; j <= Runners[i].Laps.Count; ++j)
+                {
+                    time += Runners[i].Laps[j - 1].Time;
+                    row.CreateCell(j).SetCellValue(time.ToString());
+                }
+                row.CreateCell(CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
+                RowId++;
             }
 
             return workbook;
@@ -288,5 +348,5 @@ namespace TFTS.ViewModel
 }
 
 /* TODO: add vibration */
-/* check picker */
 /* same name runners */
+/* optimize lapDoneCommand */
