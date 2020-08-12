@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:TFTS;assembly=TFTS"
-             xmlns:converters="clr-namespace:TFTS.misc"
+             xmlns:converters="clr-namespace:TFTS.Converters"
              Title="Забег"
              mc:Ignorable="d"
              x:Class="TFTS.View.RaceView">

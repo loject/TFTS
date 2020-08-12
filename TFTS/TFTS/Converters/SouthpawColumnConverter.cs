@@ -5,7 +5,7 @@ using System.Text;
 using TFTS.Model;
 using Xamarin.Forms;
 
-namespace TFTS.misc
+namespace TFTS.Converters
 {
     class SouthpawColumnConverter : IValueConverter
     {
