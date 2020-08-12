@@ -87,6 +87,15 @@ namespace TFTS.ViewModel
                 }
             }
         }
+        public bool HighlightFinishers
+        {
+            get => Preferences.Get(nameof(HighlightFinishers), true);
+            set
+            {
+                Preferences.Set(nameof(HighlightFinishers), value);
+                OnPropertyChanged(nameof(HighlightFinishers));
+            }
+        }
 
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;

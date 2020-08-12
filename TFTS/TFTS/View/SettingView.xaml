@@ -19,11 +19,14 @@
                     <TableSection Title="Управление">
                         <SwitchCell Text="Завершение круга по свайпу" On="{Binding LapDoneBySwipe}"/>
                         <SwitchCell Text="Первый круг всегда полный(если количество кругов не целое)" On="{Binding FirstLapAlwaysFull}"/>
+                        <SwitchCell Text="Вибрировать при завершении круга" On="{Binding VibrationOnLapDone}"/>
+                        <EntryCell  Label="Длительность вибрации" Text="{Binding VibrationOnLapDoneLength, Converter={StaticResource IntToStringConverter}}" Keyboard="Numeric"/>
+                    </TableSection>
+                    <TableSection Title="Вид">
                         <SwitchCell Text="Сортировка лучших" On="{Binding SortBest}"/>
                         <SwitchCell Text="Перемещать в конец финишировавших" On="{Binding MoveFinishedToEnd}" IsEnabled="{Binding SortBest}"/>
                         <SwitchCell Text="Режим левши" On="{Binding LeftHandMode}"/>
-                        <SwitchCell Text="Вибрировать при завершении круга" On="{Binding VibrationOnLapDone}"/>
-                        <EntryCell  Label="Длительность вибрации" Text="{Binding VibrationOnLapDoneLength, Converter={StaticResource IntToStringConverter}}" Keyboard="Numeric"/>
+                        <SwitchCell Text="Выделять цветом финиширующих" On="{Binding HighlightFinishers}"/>
                     </TableSection>
                 </TableRoot>
             </TableView>

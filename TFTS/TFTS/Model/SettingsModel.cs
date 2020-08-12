@@ -33,5 +33,9 @@ namespace TFTS.Model
         {
             get => Preferences.Get(nameof(VibrationOnLapDoneLength), 150);
         }
+        public static bool HighlightFinishers
+        {
+            get => Preferences.Get(nameof(HighlightFinishers), true);
+        }
     }
 }
