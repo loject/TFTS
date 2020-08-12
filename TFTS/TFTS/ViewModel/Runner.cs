@@ -46,20 +46,44 @@ namespace TFTS.ViewModel
         {
             get
             {
-                if (Laps.Count == 0) return "Н/С";
-                TimeSpan best = TimeSpan.MaxValue;
-                foreach(Lap lap in Laps)
-                    if (lap.Time < best)
-                        best = lap.Time;
-                return Utils.getStringFromTimeSpan((best == TimeSpan.MaxValue) ? TimeSpan.Zero : best);
+                try
+                {
+                    if (Laps.Count == 0) return "Н/С";
+                    TimeSpan best = TimeSpan.MaxValue;
+                    foreach (Lap lap in Laps)
+                        if (lap.Time < best)
+                            best = lap.Time;
+                    return Utils.getStringFromTimeSpan((best == TimeSpan.MaxValue) ? TimeSpan.Zero : best);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+                    Console.WriteLine("Error");
+                }
+                return "Error";
             }
         }
         public string LastLapTime
         {
             get
             {
-                if (Laps.Count == 0) return "Н/С";
-                return Utils.getStringFromTimeSpan(Laps[Laps.Count - 1].Time);
+                try
+                {
+                    if (Laps.Count == 0) return "Н/С";
+                    return Utils.getStringFromTimeSpan(Laps[Laps.Count - 1].Time);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+                    Console.WriteLine("Error");
+                }
+                return "Error";
             }
         }
         public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Laps) res += lap.Time; return res; } }
@@ -68,27 +92,60 @@ namespace TFTS.ViewModel
 
         public void LapDone(Lap lap)
         {
-            Laps.Add(lap);
-            OnPropertyChanged(nameof(LapsLeft));
-            OnPropertyChanged(nameof(LapsOvercome));
-            OnPropertyChanged(nameof(BestLapTime));
-            OnPropertyChanged(nameof(LastLapTime));
+            try
+            {
+                Laps.Add(lap);
+                OnPropertyChanged(nameof(LapsLeft));
+                OnPropertyChanged(nameof(LapsOvercome));
+                OnPropertyChanged(nameof(BestLapTime));
+                OnPropertyChanged(nameof(LastLapTime));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error - " + e.Message);
+            }
+            catch
+            {
+                Console.WriteLine("Error");
+            }
         }
         public void RemoveLap(int index)
         {
-            Laps.RemoveAt(index);
-            OnPropertyChanged(nameof(LapsLeft));
-            OnPropertyChanged(nameof(LapsOvercome));
-            OnPropertyChanged(nameof(BestLapTime));
-            OnPropertyChanged(nameof(LastLapTime));
+            try
+            {
+                Laps.RemoveAt(index);
+                OnPropertyChanged(nameof(LapsLeft));
+                OnPropertyChanged(nameof(LapsOvercome));
+                OnPropertyChanged(nameof(BestLapTime));
+                OnPropertyChanged(nameof(LastLapTime));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error - " + e.Message);
+            }
+            catch
+            {
+                Console.WriteLine("Error");
+            }
         }
         public void Clear()
         {
-            Laps.Clear();
-            OnPropertyChanged(nameof(LapsLeft));
-            OnPropertyChanged(nameof(LapsOvercome));
-            OnPropertyChanged(nameof(BestLapTime));
-            OnPropertyChanged(nameof(LastLapTime));
+            try
+            {
+                Laps.Clear();
+                OnPropertyChanged(nameof(LapsLeft));
+                OnPropertyChanged(nameof(LapsOvercome));
+                OnPropertyChanged(nameof(BestLapTime));
+                OnPropertyChanged(nameof(LastLapTime));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error - " + e.Message);
+            }
+            catch
+            {
+                Console.WriteLine("Error");
+            }
         }
 
 

@@ -51,7 +51,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new Runner("Runner", this)));
+            get => new Command(() => Runners.Add(new Runner("Runner" + Runners.Count.ToString(), this)));
         }
         public ICommand GoToRacePageCommand
         {
@@ -83,36 +83,54 @@ namespace TFTS.ViewModel
         {
             get => new Command(() =>
             {
-                if (IsRunning)
+                try
                 {
-                    timer_.Stop();
-                }
-                else
-                {
-                    if (timer_.ElapsedMilliseconds == 0) startTime = DateTime.Now;
-                    timer_.Start();
-                    Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+                    if (IsRunning)
                     {
-                        OnPropertyChanged(nameof(TotalTime));
-                        return timer_.IsRunning;
-                    });
+                        timer_.Stop();
+                    }
+                    else
+                    {
+                        if (timer_.ElapsedMilliseconds == 0) startTime = DateTime.Now;
+                        timer_.Start();
+                        Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+                        {
+                            OnPropertyChanged(nameof(TotalTime));
+                            return timer_.IsRunning;
+                        });
+                    }
+                    OnPropertyChanged(nameof(IsRunning));
                 }
-                OnPropertyChanged(nameof(IsRunning));
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+
+                }
             });
         }
         public ICommand ResetCommand
         {
             get => new Command(async () =>
             {
-                bool choiceIsStop = await Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
-                if (choiceIsStop == true)
+                try
                 {
-                    timer_.Reset();
-                    foreach (Runner runner in Runners)
-                        runner.Clear();
-                    OnPropertyChanged(nameof(TotalTime));
-                    OnPropertyChanged(nameof(IsRunning));
-                    OnPropertyChanged(nameof(Runners));
+                    bool choiceIsStop = await Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
+                    if (choiceIsStop == true)
+                    {
+                        timer_.Reset();
+                        foreach (Runner runner in Runners)
+                            runner.Clear();
+                        OnPropertyChanged(nameof(TotalTime));
+                        OnPropertyChanged(nameof(IsRunning));
+                        OnPropertyChanged(nameof(Runners));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("error - " + e.Message);
                 }
             });
         }
@@ -120,7 +138,18 @@ namespace TFTS.ViewModel
         {
             get => new Command(() =>
             {
-                Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+                try
+                {
+                    Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+                    Console.WriteLine("Error");
+                }
             });
         }
         public ICommand ExportXLSXFileCommand
@@ -200,6 +229,10 @@ namespace TFTS.ViewModel
                     {
                         Vibration.Vibrate();
                     }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
                 }
                 catch
                 {
