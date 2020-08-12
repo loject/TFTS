@@ -227,7 +227,7 @@ namespace TFTS.ViewModel
                     }
                     if (SettingsModel.VibrationOnLapDone)
                     {
-                        Vibration.Vibrate();
+                        Vibration.Vibrate(SettingsModel.VibrationOnLapDoneLength);
                     }
                 }
                 catch (Exception e)
@@ -384,7 +384,7 @@ namespace TFTS.ViewModel
     }
 }
 
-/* TODO: add vibration */
-/* same name runners */
-/* optimize lapDoneCommand */
-/* dont turn off screen */
+/* TODO: 
+ * same name runners
+ * optimize lapDoneCommand
+ * dont turn off screen */

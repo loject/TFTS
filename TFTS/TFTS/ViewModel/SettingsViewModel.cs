@@ -9,7 +9,7 @@ namespace TFTS.ViewModel
     class SettingsViewModel : INotifyPropertyChanged
     {
         const int MaxVibrationLength = 10000;
-        const int MinVibrationLength = 100;
+        const int MinVibrationLength = 0;
         public bool LapDoneBySwipe
         {
             get => Preferences.Get(nameof(LapDoneBySwipe), false);
