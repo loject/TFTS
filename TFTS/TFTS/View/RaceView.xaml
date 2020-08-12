@@ -12,6 +12,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:SouthpawColumnConverter x:Key="SouthpawColumnConverter" />
+            <converters:RunnerPositionToColorConverter x:Key="RunnerPositionToColorConverter" />
             <Style x:Key="SouthpawModeIndependetColumnDefinitions" TargetType="Grid">
                 <Setter Property="ColumnDefinitions">
                     <Setter.Value>
@@ -42,7 +43,7 @@
             </Style>
             <DataTemplate x:Key="LapDoneBySwipeOn">
                 <ViewCell>
-                    <SwipeView>
+                    <SwipeView BackgroundColor="{Binding ., Converter={StaticResource RunnerPositionToColorConverter}}">
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 
@@ -57,7 +58,7 @@
                                                     CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
-                        <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}">
+                        <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}" BackgroundColor="{Binding .LapsLeft, Converter={StaticResource RunnerPositionToColorConverter}}">
                             <Label Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}"
                                                     VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="23"/>
                             <Label  Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=1}" Text="{Binding LapsLeft}" 
@@ -74,7 +75,7 @@
             </DataTemplate>
             <DataTemplate x:Key="LapDoneBySwipeOFF">
                 <ViewCell>
-                    <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}">
+                    <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}" BackgroundColor="{Binding .LapsLeft, Converter={StaticResource RunnerPositionToColorConverter}}">
                         <Button Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}" 
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
                                                 CommandParameter="{Binding .}"  FontSize="14">
