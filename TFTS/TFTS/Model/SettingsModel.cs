@@ -29,5 +29,9 @@ namespace TFTS.Model
         {
             get => Preferences.Get(nameof(VibrationOnLapDone), true);
         }
+        public static int VibrationOnLapDoneLength
+        {
+            get => Preferences.Get(nameof(VibrationOnLapDoneLength), 150);
+        }
     }
 }

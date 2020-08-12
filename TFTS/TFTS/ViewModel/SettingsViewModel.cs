@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Java.IO;
+using System;
+using System.ComponentModel;
 using TFTS.Model;
 using Xamarin.Essentials;
 
@@ -6,6 +8,8 @@ namespace TFTS.ViewModel
 {
     class SettingsViewModel : INotifyPropertyChanged
     {
+        const int MaxVibrationLength = 10000;
+        const int MinVibrationLength = 100;
         public bool LapDoneBySwipe
         {
             get => Preferences.Get(nameof(LapDoneBySwipe), false);
@@ -58,6 +62,29 @@ namespace TFTS.ViewModel
             {
                 Preferences.Set(nameof(VibrationOnLapDone), value);
                 OnPropertyChanged(nameof(VibrationOnLapDone));
+            }
+        }
+        public int VibrationOnLapDoneLength
+        {
+            get => Preferences.Get(nameof(VibrationOnLapDoneLength), 150);
+            set
+            {
+                try
+                {
+                    int val = value;
+                    if (val > MaxVibrationLength) val = MaxVibrationLength;
+                    if (val < MinVibrationLength) val = MinVibrationLength;
+                    Preferences.Set(nameof(VibrationOnLapDoneLength), val);
+                    OnPropertyChanged(nameof(VibrationOnLapDoneLength));
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+                    System.Console.WriteLine("Error");
+                }
             }
         }
 
