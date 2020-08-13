@@ -1,6 +1,9 @@
 ﻿using Java.IO;
+using Java.Util;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using TFTS.Model;
 using Xamarin.Essentials;
 
@@ -28,13 +31,36 @@ namespace TFTS.ViewModel
                 OnPropertyChanged(nameof(FirstLapAlwaysFull));
             }
         }
-        public bool SortBest
+        public List<string> SortBestPosibleValues
         {
-            get => Preferences.Get(nameof(SortBest), true);
+            get
+            {
+                List<string> res = new List<string>();
+                foreach (var property in typeof(RunnersSortingType).GetEnumNames())
+                    res.Add(property);
+                return res;
+            }
+        }
+        public string SortBest
+        {
+            get
+            {
+                string res = "error";
+                try
+                {
+                    res = Preferences.Get(nameof(SortBest), RunnersSortingType.DontSort.ToString());
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine("Error - " + e.Message);
+                }
+                return res;
+            }
             set
             {
-                Preferences.Set(nameof(SortBest), value);
+                Preferences.Set(nameof(SortBest), value.ToString());
                 OnPropertyChanged(nameof(SortBest));
+                OnPropertyChanged(nameof(MoveFinishedToEndIsEnabled));
             }
         }
         public bool MoveFinishedToEnd
@@ -96,7 +122,9 @@ namespace TFTS.ViewModel
                 OnPropertyChanged(nameof(HighlightFinishers));
             }
         }
-
+        #region misc
+        public bool MoveFinishedToEndIsEnabled { get => SortBest != RunnersSortingType.DontSort.ToString(); }
+        #endregion
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string name)

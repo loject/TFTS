@@ -199,7 +199,7 @@ namespace TFTS.ViewModel
                         Position = position
                     });
 
-                    if (SettingsModel.SortBest)
+                    if (SettingsModel.SortBest == RunnersSortingType.SortImmediately)
                     {
                         /* greater - faster */
                         Runners.Sort(new Comparison<Runner>((a, b) => {

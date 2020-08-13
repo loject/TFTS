@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:TFTS.Converters"
+             xmlns:CustomView="clr-namespace:TFTS.misc.CustomView"
              Title="Настройки"
              mc:Ignorable="d"
              x:Class="TFTS.View.SettingView">
@@ -23,8 +24,8 @@
                         <EntryCell  Label="Длительность вибрации" Text="{Binding VibrationOnLapDoneLength, Converter={StaticResource IntToStringConverter}}" Keyboard="Numeric"/>
                     </TableSection>
                     <TableSection Title="Вид">
-                        <SwitchCell Text="Сортировка лучших" On="{Binding SortBest}"/>
-                        <SwitchCell Text="Перемещать в конец финишировавших" On="{Binding MoveFinishedToEnd}" IsEnabled="{Binding SortBest}"/>
+                        <CustomView:PickerCell Title="Сортировать лучших" Label="Сортировать лучших" ItemsSource="{Binding SortBestPosibleValues}" SelectedValue="{Binding SortBest}"/>
+                        <SwitchCell Text="Перемещать в конец финишировавших" On="{Binding MoveFinishedToEnd}" IsEnabled="{Binding MoveFinishedToEndIsEnabled}"/>
                         <SwitchCell Text="Режим левши" On="{Binding LeftHandMode}"/>
                         <SwitchCell Text="Выделять цветом финиширующих" On="{Binding HighlightFinishers}"/>
                     </TableSection>

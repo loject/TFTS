@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="misc\CustomView\PickerCell.xaml.cs">
+      <DependentUpon>PickerCell.xaml</DependentUpon>
+    </Compile>
     <Compile Update="View\RaceResultsView.xaml.cs">
       <DependentUpon>RaceResultsView.xaml</DependentUpon>
     </Compile>

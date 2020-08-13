@@ -1,8 +1,15 @@
 ﻿using NPOI.HSSF.Record;
+using System;
 using Xamarin.Essentials;
 
 namespace TFTS.Model
 {
+    enum RunnersSortingType
+    {
+        DontSort = 0,
+        SortImmediately = 1,
+        SortAfterLastLapDone = 2
+    }
     class SettingsModel
     {
         public static bool LapDoneBySwipe
@@ -13,9 +20,23 @@ namespace TFTS.Model
         {
             get => Preferences.Get(nameof(FirstLapAlwaysFull), true);
         }
-        public static bool SortBest
+        public static RunnersSortingType SortBest
         {
-            get => Preferences.Get(nameof(SortBest), true);
+            get
+            {
+                try
+                {
+                    string SortTypeStr = Preferences.Get(nameof(SortBest), RunnersSortingType.DontSort.ToString());
+                    RunnersSortingType SortType = (RunnersSortingType)Enum.Parse(typeof(RunnersSortingType), SortTypeStr);
+                    return SortType;
+                }
+                catch (Exception e)
+                {
+                    Preferences.Remove(nameof(SortBest));
+                    Console.WriteLine("Error - " + e.Message);
+                    return RunnersSortingType.DontSort;
+                }
+            } 
         }
         public static bool MoveFinishedToEnd
         {
