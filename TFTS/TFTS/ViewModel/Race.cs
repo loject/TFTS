@@ -201,29 +201,14 @@ namespace TFTS.ViewModel
 
                     if (SettingsModel.SortBest == RunnersSortingType.SortImmediately)
                     {
-                        /* greater - faster */
-                        Runners.Sort(new Comparison<Runner>((a, b) => {
-                            if (a.LapsOvercome != b.LapsOvercome)
-                            {
-                                if (SettingsModel.MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
-                                {
-                                    if (a.IsFinished && !b.IsFinished)
-                                        return 1;
-                                    if (!a.IsFinished && b.IsFinished)
-                                        return -1;
-                                }
-                                if (a.LapsOvercome > b.LapsOvercome)
-                                    return -1;
-                                if (a.LapsOvercome < b.LapsOvercome)
-                                    return 1;
-                            }
-                            if (a.LapsOvercome == 0)
-                                return 0;
-
-                            int lastLapId = a.Laps.Count - 1;
-                            if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
-                            return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
-                        }));
+                        Runners.Sort();
+                    }
+                    else if (SettingsModel.SortBest == RunnersSortingType.SortAfterLastLapDone)
+                    {
+                        if (position == Runners.Count)
+                        {
+                            Runners.Sort();
+                        }
                     }
                     if (SettingsModel.VibrationOnLapDone)
                     {

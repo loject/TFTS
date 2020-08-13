@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using TFTS.Model;
 using Xamarin.Essentials;
 
 namespace TFTS.ViewModel
@@ -16,7 +18,7 @@ namespace TFTS.ViewModel
         public int Position { get; set; }
     }
 
-    public class Runner : INotifyPropertyChanged
+    public class Runner : INotifyPropertyChanged, IComparable
     {
         private string name_ = "Runner";
         private Race race_;
@@ -147,7 +149,32 @@ namespace TFTS.ViewModel
                 Console.WriteLine("Error");
             }
         }
+        /* greater - faster */
+        public int CompareTo(object obj)
+        {
+            var x = this;
+            var y = obj as Runner;
+            if (x.LapsOvercome != y.LapsOvercome)
+            {
+                if (SettingsModel.MoveFinishedToEnd && (x.IsFinished && !y.IsFinished || !x.IsFinished && y.IsFinished))
+                {
+                    if (x.IsFinished && !y.IsFinished)
+                        return 1;
+                    if (!x.IsFinished && y.IsFinished)
+                        return -1;
+                }
+                if (x.LapsOvercome > y.LapsOvercome)
+                    return -1;
+                if (x.LapsOvercome < y.LapsOvercome)
+                    return 1;
+            }
+            if (x.LapsOvercome == 0)
+                return 0;
 
+            int lastLapId = x.Laps.Count - 1;
+            if (x.Laps[lastLapId].Time == y.Laps[lastLapId].Time) return 0;
+            return (x.Laps[lastLapId].Time > y.Laps[lastLapId].Time) ? 1 : -1;
+        }
 
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
