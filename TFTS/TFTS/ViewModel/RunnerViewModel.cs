@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -14,21 +15,18 @@ namespace TFTS.ViewModel
         public RunnerViewModel(RunnerModel runner) => this.Runner = runner;
 
         public float LapsOvercome { get => DistanceOvercome / Runner.Race.LapLength; }
-        public float DistanceLeft { get => Runner.Race.Distance - DistanceOvercome; }
+        public float DistanceLeft { get => Runner.TotalDistance - DistanceOvercome; }
         public float LapsLeft { get => DistanceLeft / Runner.Race.LapLength; }
-        public float LapsGoal { get => Runner.Race.Distance / Runner.Race.LapLength; }
+        public float LapsGoal { get => Runner.TotalDistance / Runner.Race.LapLength; }
         public string BestLapTime
         {
             get
             {
                 try
                 {
+                    /* TODO: beatify */
                     if (Runner.Laps.Count == 0) return "Н/С";
-                    TimeSpan best = TimeSpan.MaxValue;
-                    foreach (Lap lap in Runner.Laps)
-                        if (lap.Time < best)
-                            best = lap.Time;
-                    return Utils.getStringFromTimeSpan((best == TimeSpan.MaxValue) ? TimeSpan.Zero : best);
+                    return Utils.getStringFromTimeSpan(Runner.Laps.OrderBy(lap => lap.Time).Take(1).Select(Lap => Lap.Time).FirstOrDefault());
                 }
                 catch (Exception e)
                 {

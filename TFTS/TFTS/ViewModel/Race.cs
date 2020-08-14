@@ -35,10 +35,10 @@ namespace TFTS.ViewModel
         {
             Runners = new SortableObservableCollection<RunnerViewModel>
             {
-                new RunnerViewModel(new RunnerModel("Runner", this)),
-                new RunnerViewModel(new RunnerModel("Runner1", this)),
-                new RunnerViewModel(new RunnerModel("Runner2", this)),
-                new RunnerViewModel(new RunnerModel("Runner3", this)),
+                new RunnerViewModel(new RunnerModel("Runner", Distance, this)),
+                new RunnerViewModel(new RunnerModel("Runner1", Distance, this)),
+                new RunnerViewModel(new RunnerModel("Runner2", Distance, this)),
+                new RunnerViewModel(new RunnerModel("Runner3", Distance, this)),
             };
 
             Navigation = navigation;
@@ -48,7 +48,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new RunnerViewModel(new RunnerModel("Runner" + Runners.Count.ToString(), this))));
+            get => new Command(() => Runners.Add(new RunnerViewModel(new RunnerModel("Runner" + Runners.Count.ToString(), Distance, this))));
         }
         public ICommand GoToRacePageCommand
         {
@@ -180,15 +180,7 @@ namespace TFTS.ViewModel
                 {
                     int position = 1;
                     foreach (RunnerViewModel runner1 in Runners) if (runner1.Runner.Laps.Count > runner.Runner.Laps.Count) position++;
-                    float lapLength = lapLength_;
-                    if (UnevenLaps)
-                    {
-                        if (SettingsModel.FirstLapAlwaysFull && runner.LapsLeft < 1 && runner.LapsLeft > 0
-                            || !SettingsModel.FirstLapAlwaysFull && runner.LapsOvercome == 0)
-                        {
-                            lapLength = Distance % LapLength;
-                        }
-                    }
+                    float lapLength = (runner.IsFinished ? LapLength: runner.Runner.CheckPoints[(int)Math.Ceiling(runner.LapsOvercome)]);
                     runner.LapDone(new Lap
                     {
                         Length = lapLength,
