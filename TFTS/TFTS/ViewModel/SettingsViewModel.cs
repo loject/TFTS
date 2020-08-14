@@ -119,6 +119,15 @@ namespace TFTS.ViewModel
                 OnPropertyChanged(nameof(HighlightFinishers));
             }
         }
+        public bool IndividualDistance
+        {
+            get => Preferences.Get(nameof(IndividualDistance), false);
+            set
+            {
+                Preferences.Set(nameof(IndividualDistance), value);
+                OnPropertyChanged(nameof(IndividualDistance));
+            }
+        }
         #region misc
         public bool MoveFinishedToEndIsEnabled { get => SortBest != RunnersSortingType.DontSort.ToString(); }
         #endregion

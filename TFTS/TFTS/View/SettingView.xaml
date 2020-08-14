@@ -22,6 +22,7 @@
                         <SwitchCell Text="Первый круг всегда полный(если количество кругов не целое)" On="{Binding FirstLapAlwaysFull}"/>
                         <SwitchCell Text="Вибрировать при завершении круга" On="{Binding VibrationOnLapDone}"/>
                         <EntryCell  Label="Длительность вибрации" Text="{Binding VibrationOnLapDoneLength, Converter={StaticResource IntToStringConverter}}" Keyboard="Numeric"/>
+                        <SwitchCell Text="Индивидуальные дистанции" On="{Binding IndividualDistance}"/>
                     </TableSection>
                     <TableSection Title="Вид">
                         <CustomView:PickerCell Title="Сортировать лучших" Label="Сортировать лучших" ItemsSource="{Binding SortBestPosibleValues}" SelectedValue="{Binding SortBest}"/>

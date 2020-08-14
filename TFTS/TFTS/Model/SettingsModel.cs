@@ -58,5 +58,9 @@ namespace TFTS.Model
         {
             get => Preferences.Get(nameof(HighlightFinishers), true);
         }
+        public static bool IndividualDistance
+        {
+            get => Preferences.Get(nameof(IndividualDistance), false);
+        }
     }
 }
