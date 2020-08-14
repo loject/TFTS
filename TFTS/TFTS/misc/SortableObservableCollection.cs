@@ -7,6 +7,12 @@ namespace TFTS.misc
 {
     public class SortableObservableCollection<T> : ObservableCollection<T>
     {
+        public SortableObservableCollection() : base()
+        { }
+        public SortableObservableCollection(IEnumerable<T> ts) : base(ts)
+        { }
+        public SortableObservableCollection(List<T> ts) : base(ts)
+        { }
         public void Sort(Comparison<T> comparison)
         {
             var items = this.Items as List<T>;
