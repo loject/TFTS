@@ -28,8 +28,8 @@ namespace TFTS.View
                     return 0;
                 if (a.LapsOvercome != b.LapsOvercome)
                     return (a.LapsOvercome > a.LapsOvercome) ? -1 : 1;
-                if (a.Laps[a.Laps.Count - 1].Time != b.Laps[b.Laps.Count - 1].Time)
-                    return (a.Laps[a.Laps.Count - 1].Time > b.Laps[b.Laps.Count - 1].Time) ? 1 : -1;
+                if (a.Runner.Laps[^1].Time != b.Runner.Laps[^1].Time)
+                    return (a.Runner.Laps[^1].Time > b.Runner.Laps[^1].Time) ? 1 : -1;
                 return 0;
             });
 
@@ -55,24 +55,29 @@ namespace TFTS.View
             for (int i = 1; i <= tmp.Count; ++i)
             {
                 string positionOnFinish = "Н/Ф";
-                if (tmp[i - 1].IsFinished) positionOnFinish = tmp[i - 1].Laps[CeilLapsCount - 1].Position.ToString();
+                if (tmp[i - 1].IsFinished)
+                {
+                    positionOnFinish = tmp[i - 1].Runner.Laps[CeilLapsCount - 1].Position.ToString();
+                }
                 grid.Children.Add(GetLabelWithText(tmp[i - 1].Name + "(" + positionOnFinish + ")"), 0, i);
                 for (int j = 1; j <= CeilLapsCount; ++j)
                 {
-                    if (tmp[i - 1].Laps.Count >= j)
-                        grid.Children.Add(GetLabelWithText(tmp[i - 1].Laps[j - 1].TimeStr + "(" + tmp[i - 1].Laps[j - 1].Position + "-й)"), j, i);
+                    if (tmp[i - 1].Runner.Laps.Count >= j)
+                        grid.Children.Add(GetLabelWithText(tmp[i - 1].Runner.Laps[j - 1].TimeStr + "(" + tmp[i - 1].Runner.Laps[j - 1].Position + "-й)"), j, i);
                     else
                         grid.Children.Add(GetLabelWithText("-"), j, i);
                 }
-                grid.Children.Add(GetLabelWithText(Utils.getStringFromTimeSpan(tmp[i - 1].TotalTime)), CeilLapsCount + 1, i);
+                grid.Children.Add(GetLabelWithText(txt: Utils.getStringFromTimeSpan(tmp[i - 1].TotalTime)),
+                                  CeilLapsCount + 1, i);
             }
         }
 
         Label GetLabelWithText(string txt)
         {
-            Label label = new Label();
-            label.Text = txt;
-            return label;
+            return new Label
+            {
+                Text = txt
+            };
         }
     }
 

@@ -33,13 +33,12 @@ namespace TFTS.ViewModel
         #region constructors
         public Race(INavigation navigation)
         {
-
             Runners = new SortableObservableCollection<RunnerViewModel>
             {
-                new RunnerViewModel("Runner", this),
-                new RunnerViewModel("Runner1", this),
-                new RunnerViewModel("Runner2", this),
-                new RunnerViewModel("Runner3", this),
+                new RunnerViewModel(new RunnerModel("Runner", this)),
+                new RunnerViewModel(new RunnerModel("Runner1", this)),
+                new RunnerViewModel(new RunnerModel("Runner2", this)),
+                new RunnerViewModel(new RunnerModel("Runner3", this)),
             };
 
             Navigation = navigation;
@@ -49,7 +48,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new RunnerViewModel("Runner" + Runners.Count.ToString(), this)));
+            get => new Command(() => Runners.Add(new RunnerViewModel(new RunnerModel("Runner" + Runners.Count.ToString(), this))));
         }
         public ICommand GoToRacePageCommand
         {
@@ -57,9 +56,9 @@ namespace TFTS.ViewModel
             {
                 try
                 {
-                    foreach (var i in Runners)
-                        if (i.Name == "")
-                            Runners.Remove(i);
+                    for (int i = 0; i < Runners.Count; ++i)
+                        if (Runners[i].Name == "")
+                            Runners.RemoveAt(i--);
                     Navigation.PushAsync(new View.RaceView(this));
                     Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
                 }
@@ -180,7 +179,7 @@ namespace TFTS.ViewModel
                 try
                 {
                     int position = 1;
-                    foreach (RunnerViewModel runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
+                    foreach (RunnerViewModel runner1 in Runners) if (runner1.Runner.Laps.Count > runner.Runner.Laps.Count) position++;
                     float lapLength = lapLength_;
                     if (UnevenLaps)
                     {
@@ -229,7 +228,7 @@ namespace TFTS.ViewModel
         }
         public ICommand DeleteLapCommand
         {
-            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { if (runner.Runner.Laps.Count != 0) runner.RemoveLap(runner.Runner.Laps.Count - 1); });
         }
 
         #endregion
@@ -250,9 +249,9 @@ namespace TFTS.ViewModel
             for (int i = 0; i < Runners.Count; ++i)
             {
                 res += Runners[i].Name + separator;
-                for (int j = 0; j < Runners[i].Laps.Count; ++j)
+                for (int j = 0; j < Runners[i].Runner.Laps.Count; ++j)
                 {
-                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")" + separator;
+                    res += Utils.getStringFromTimeSpan(Runners[i].Runner.Laps[j].Time) + "(" + Runners[i].Runner.Laps[j].Position.ToString() + ")" + separator;
                 }
                 res += "\n";
             }
@@ -300,10 +299,10 @@ namespace TFTS.ViewModel
             {
                 var CurrentRow = sheet.CreateRow(RowId);
                 CurrentRow.CreateCell(0).SetCellValue(Runners[i].Name);
-                for (int j = 1; j <= Runners[i].Laps.Count; ++j)
+                for (int j = 1; j <= Runners[i].Runner.Laps.Count; ++j)
                 {
-                    CurrentRow.CreateCell(2 * j - 1).SetCellValue(Runners[i].Laps[j - 1].Time.ToString());
-                    CurrentRow.CreateCell(2 * j).SetCellValue(Runners[i].Laps[j - 1].Position);
+                    CurrentRow.CreateCell(2 * j - 1).SetCellValue(Runners[i].Runner.Laps[j - 1].Time.ToString());
+                    CurrentRow.CreateCell(2 * j).SetCellValue(Runners[i].Runner.Laps[j - 1].Position);
                 }
                 CurrentRow.CreateCell(2 * CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
                 RowId++;
@@ -333,9 +332,9 @@ namespace TFTS.ViewModel
                 var row = sheet.CreateRow(RowId);
                 var time = TimeSpan.Zero;
                 row.CreateCell(0).SetCellValue(Runners[i].Name);
-                for (int j = 1; j <= Runners[i].Laps.Count; ++j)
+                for (int j = 1; j <= Runners[i].Runner.Laps.Count; ++j)
                 {
-                    time += Runners[i].Laps[j - 1].Time;
+                    time += Runners[i].Runner.Laps[j - 1].Time;
                     row.CreateCell(j).SetCellValue(time.ToString());
                 }
                 row.CreateCell(CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
@@ -361,4 +360,5 @@ namespace TFTS.ViewModel
  * dont turn off screen 
  * fix overrunned laps 
  * validate race done command
+ * export overruned laps
  */

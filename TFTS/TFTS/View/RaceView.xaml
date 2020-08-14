@@ -47,14 +47,14 @@
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
+                                                    Command="{Binding .Runner.Race.LapDoneCommand}"
                                                     CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.LeftItems>
                         <SwipeView.RightItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Убрать круг" BackgroundColor="LightPink" 
-                                                    Command="{Binding .race.DeleteLapCommand}"
+                                                    Command="{Binding .Runner.Race.DeleteLapCommand}"
                                                     CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
@@ -77,11 +77,11 @@
                 <ViewCell>
                     <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}" BackgroundColor="{Binding .LapsLeft, Converter={StaticResource RunnerPositionToColorConverter}}">
                         <Button Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}" 
-                                                Command="{Binding .race.LapDoneCommand}"
+                                                Command="{Binding .Runner.Race.LapDoneCommand}"
                                                 CommandParameter="{Binding .}" FontSize="14">
                             <Button.Triggers>
-                                <DataTrigger TargetType="Button" Binding="{Binding .race.IsRunning}" Value="False">
-                                    <Setter Property="Command" Value="{Binding .race.ShowRunnerResultCommand}"/>
+                                <DataTrigger TargetType="Button" Binding="{Binding .Runner.Race.IsRunning}" Value="False">
+                                    <Setter Property="Command" Value="{Binding .Runner.Race.ShowRunnerResultCommand}"/>
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>

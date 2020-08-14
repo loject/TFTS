@@ -1,9 +1,6 @@
-﻿using Java.IO;
-using Java.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using TFTS.Model;
 using Xamarin.Essentials;
 
