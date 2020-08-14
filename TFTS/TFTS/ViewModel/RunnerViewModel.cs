@@ -18,47 +18,8 @@ namespace TFTS.ViewModel
         public float DistanceLeft { get => Runner.TotalDistance - DistanceOvercome; }
         public float LapsLeft { get => DistanceLeft / Runner.Race.LapLength; }
         public float LapsGoal { get => Runner.TotalDistance / Runner.Race.LapLength; }
-        public string BestLapTime
-        {
-            get
-            {
-                try
-                {
-                    /* TODO: beatify */
-                    if (Runner.Laps.Count == 0) return "Н/С";
-                    return Utils.getStringFromTimeSpan(Runner.Laps.OrderBy(lap => lap.Time).Take(1).Select(Lap => Lap.Time).FirstOrDefault());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error - " + e.Message);
-                }
-                catch
-                {
-                    Console.WriteLine("Error");
-                }
-                return "Error";
-            }
-        }
-        public string LastLapTime
-        {
-            get
-            {
-                try
-                {
-                    if (Runner.Laps.Count == 0) return "Н/С";
-                    return Utils.getStringFromTimeSpan(Runner.Laps[Runner.Laps.Count - 1].Time);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error - " + e.Message);
-                }
-                catch
-                {
-                    Console.WriteLine("Error");
-                }
-                return "Error";
-            }
-        }
+        public string BestLapTime { get => Utils.getStringFromTimeSpan(Runner.Laps.OrderBy(lap => lap.Time).Take(1).Select(Lap => Lap.Time).FirstOrDefault(), "Н/С"); }
+        public string LastLapTime { get => Utils.getStringFromTimeSpan(Runner.Laps.LastOrDefault().Time, "Н/С"); }
         public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Runner.Laps) res += lap.Time; return res; } }
         public float DistanceOvercome { get => Runner.Laps.Sum(lap => lap.Length); }
         public bool IsFinished { get => LapsOvercome >= LapsGoal; }

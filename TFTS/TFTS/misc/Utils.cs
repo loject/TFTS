@@ -6,8 +6,9 @@ namespace TFTS
 {
     public static class Utils
     {
-        static public string getStringFromTimeSpan(TimeSpan timeSpan)
+        static public string getStringFromTimeSpan(TimeSpan timeSpan, string DefaultString = null)
         {
+            if (DefaultString != null && timeSpan == TimeSpan.Zero) return DefaultString;
             int hours = timeSpan.Hours;
             int minutes = timeSpan.Minutes;
             int seconds = timeSpan.Seconds;
