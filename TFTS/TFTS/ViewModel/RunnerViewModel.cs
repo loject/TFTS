@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using TFTS.Model;
-using Xamarin.Essentials;
 
 namespace TFTS.ViewModel
 {
@@ -18,7 +15,7 @@ namespace TFTS.ViewModel
         public int Position { get; set; }
     }
 
-    public class Runner : INotifyPropertyChanged, IComparable
+    public class RunnerViewModel : INotifyPropertyChanged, IComparable
     {
         private string name_ = "Runner";
         public Race race { get; private set; }
@@ -26,15 +23,15 @@ namespace TFTS.ViewModel
         public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
 
         #region constuctors
-        public Runner()
+        public RunnerViewModel()
         {
         }
-        public Runner(string name)
+        public RunnerViewModel(string name)
         {
             this.Name = name;
         }
 
-        public Runner(string name, Race race)
+        public RunnerViewModel(string name, Race race)
         {
             this.Name = name;
             this.race = race;
@@ -155,7 +152,7 @@ namespace TFTS.ViewModel
         {
             /* mb compare distance */
             var x = this;
-            var y = obj as Runner;
+            var y = obj as RunnerViewModel;
             if (x.LapsOvercome != y.LapsOvercome)
             {
                 if (SettingsModel.MoveFinishedToEnd && (x.IsFinished && !y.IsFinished || !x.IsFinished && y.IsFinished))

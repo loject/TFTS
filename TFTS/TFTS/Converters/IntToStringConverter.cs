@@ -18,8 +18,7 @@ namespace TFTS.Converters
         {
             string strValue = value as string;
             if (string.IsNullOrEmpty(strValue)) return 0;
-            int result = 0;
-            if (int.TryParse(strValue, out result)) return result; 
+            if (int.TryParse(strValue, out int result)) return result;
             return 0;
         }
     }

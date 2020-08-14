@@ -20,8 +20,9 @@ namespace TFTS.View
             InitializeComponent();
             BindingContext = race;
 
-            List<Runner> tmp = new List<Runner>(race.Runners.ToList<Runner>());
-            tmp.Sort((Runner a, Runner b) => 
+            /* TODO: Delete this sort */
+            List<RunnerViewModel> tmp = new List<RunnerViewModel>(race.Runners.ToList<RunnerViewModel>());
+            tmp.Sort((RunnerViewModel a, RunnerViewModel b) => 
             {
                 if (a.LapsOvercome == 0 && b.LapsOvercome == 0)
                     return 0;

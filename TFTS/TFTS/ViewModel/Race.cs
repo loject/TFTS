@@ -16,7 +16,7 @@ namespace TFTS.ViewModel
     public class Race : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        public SortableObservableCollection<Runner> Runners { get; private set; }
+        public SortableObservableCollection<RunnerViewModel> Runners { get; private set; }
         private float distance_ = 1500;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
@@ -34,12 +34,12 @@ namespace TFTS.ViewModel
         public Race(INavigation navigation)
         {
 
-            Runners = new SortableObservableCollection<Runner>
+            Runners = new SortableObservableCollection<RunnerViewModel>
             {
-                new Runner("Runner", this),
-                new Runner("Runner1", this),
-                new Runner("Runner2", this),
-                new Runner("Runner3", this),
+                new RunnerViewModel("Runner", this),
+                new RunnerViewModel("Runner1", this),
+                new RunnerViewModel("Runner2", this),
+                new RunnerViewModel("Runner3", this),
             };
 
             Navigation = navigation;
@@ -49,7 +49,7 @@ namespace TFTS.ViewModel
         #region RaceSetUp commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new Runner("Runner" + Runners.Count.ToString(), this)));
+            get => new Command(() => Runners.Add(new RunnerViewModel("Runner" + Runners.Count.ToString(), this)));
         }
         public ICommand GoToRacePageCommand
         {
@@ -119,7 +119,7 @@ namespace TFTS.ViewModel
                     if (choiceIsStop == true)
                     {
                         timer_.Reset();
-                        foreach (Runner runner in Runners)
+                        foreach (RunnerViewModel runner in Runners)
                             runner.Clear();
                         OnPropertyChanged(nameof(TotalTime));
                         OnPropertyChanged(nameof(IsRunning));
@@ -175,12 +175,12 @@ namespace TFTS.ViewModel
         public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this)); }); }
         public ICommand LapDoneCommand
         {
-            get => new Command<Runner>((Runner runner) =>
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) =>
             {
                 try
                 {
                     int position = 1;
-                    foreach (Runner runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
+                    foreach (RunnerViewModel runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
                     float lapLength = lapLength_;
                     if (UnevenLaps)
                     {
@@ -225,11 +225,11 @@ namespace TFTS.ViewModel
         }
         public ICommand ShowRunnerResultCommand 
         { 
-            get => new Command<Runner>((Runner runner) => { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
         }
         public ICommand DeleteLapCommand
         {
-            get => new Command<Runner>((Runner runner) => { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
         }
 
         #endregion
@@ -358,4 +358,7 @@ namespace TFTS.ViewModel
 /* TODO: 
  * same name runners
  * optimize lapDoneCommand
- * dont turn off screen */
+ * dont turn off screen 
+ * fix overrunned laps 
+ * validate race done command
+ */
