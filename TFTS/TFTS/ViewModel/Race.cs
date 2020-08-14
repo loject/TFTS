@@ -13,10 +13,11 @@ using Xamarin.Forms;
 
 namespace TFTS.ViewModel
 {
-    public class Race : INotifyPropertyChanged
+    public class RaceViewModel : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        public SortableObservableCollection<RunnerViewModel> Runners { get; private set; }
+        [assembly: InternalsVisibleTo("RaceSetUpViewModel")]
+        public SortableObservableCollection<RunnerViewModel> Runners { get; set; } = new SortableObservableCollection<RunnerViewModel>();
         private float distance_ = 1500;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
@@ -31,49 +32,13 @@ namespace TFTS.ViewModel
         public string StartTime { get => startTime.ToString(); }
 
         #region constructors
-        public Race(INavigation navigation)
+        public RaceViewModel(INavigation navigation)
         {
-            Runners = new SortableObservableCollection<RunnerViewModel>
-            {
-                new RunnerViewModel(new RunnerModel("Runner", Distance, this)),
-                new RunnerViewModel(new RunnerModel("Runner1", Distance, this)),
-                new RunnerViewModel(new RunnerModel("Runner2", Distance, this)),
-                new RunnerViewModel(new RunnerModel("Runner3", Distance, this)),
-            };
-
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceSetUpView(this));
+            Navigation.PushAsync(new View.RaceView(this));
         }
         #endregion
         #region RaceSetUp commands
-        public ICommand AddNewRunnerCommand
-        {
-            get => new Command(() => Runners.Add(new RunnerViewModel(new RunnerModel("Runner" + Runners.Count.ToString(), Distance, this))));
-        }
-        public ICommand GoToRacePageCommand
-        {
-            get => new Command(() =>
-            {
-                try
-                {
-                    for (int i = 0; i < Runners.Count; ++i)
-                        if (Runners[i].Name == "")
-                            Runners.RemoveAt(i--);
-                    Navigation.PushAsync(new View.RaceView(this));
-                    Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-                }
-                catch (Exception e)
-                {
-                    /* TODO: log the error */
-                    Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
-                }
-                catch
-                {
-                    /* TODO: log the error */
-                    Console.WriteLine("Error while executing - GoToRacePageCommand");
-                };
-            });
-        }
         #endregion
         #region RaceViewCommands
         public ICommand StartStopCommand
@@ -117,12 +82,7 @@ namespace TFTS.ViewModel
                     bool choiceIsStop = await Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
                     if (choiceIsStop == true)
                     {
-                        timer_.Reset();
-                        foreach (RunnerViewModel runner in Runners)
-                            runner.Clear();
-                        OnPropertyChanged(nameof(TotalTime));
-                        OnPropertyChanged(nameof(IsRunning));
-                        OnPropertyChanged(nameof(Runners));
+                        Reset();
                     }
                 }
                 catch (Exception e)
@@ -225,6 +185,15 @@ namespace TFTS.ViewModel
 
         #endregion
         #region misc
+        public void Reset()
+        {
+            timer_.Reset();
+            foreach (RunnerViewModel runner in Runners)
+                runner.Clear();
+            OnPropertyChanged(nameof(TotalTime));
+            OnPropertyChanged(nameof(IsRunning));
+            OnPropertyChanged(nameof(Runners));
+        }
         private string GetRaceResultCSV()
         {
             string separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
@@ -338,7 +307,7 @@ namespace TFTS.ViewModel
         #endregion
         #region INotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
+        public void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Title="Формирование забега"
+             x:Name="RaceSetUpViewContentPage"
              x:Class="TFTS.View.RaceSetUpView">
     <ContentPage.Content>
         <StackLayout>
@@ -20,27 +21,42 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Text="Дистанция:" VerticalTextAlignment="Center"/>
-                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" />
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" Keyboard="Numeric" />
                     <Label Grid.Row="1" Grid.Column="0" Text="Длинна круга:"  VerticalTextAlignment="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapLength}" />
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapLength}" Keyboard="Numeric" />
 
                 </Grid>
             </StackLayout>
 
-            <ListView ItemsSource="{Binding Runners}">
+            <ListView ItemsSource="{Binding Runners}" SelectionMode="None">
                 <ListView.Header>
-                    <Label Text="Спортсмены" HorizontalOptions="CenterAndExpand"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Имя спортсмена" HorizontalOptions="CenterAndExpand"/>
+                        <Label Grid.Column="1" Text="Дистанция" HorizontalOptions="CenterAndExpand" IsVisible="{Binding IndividualDistance}"/>
+                    </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Entry HorizontalOptions="FillAndExpand" Text="{Binding Name}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Entry Grid.Column="0" Text="{Binding Name}"/>
+                                <Entry Grid.Column="1" Text="{Binding Distance}" Keyboard="Numeric" 
+                                       IsVisible="{Binding Source={x:Reference RaceSetUpViewContentPage}, Path=BindingContext.IndividualDistance}"/>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="+" Command="{Binding AddNewRunnerCommand}" HorizontalOptions="Center" />
-            <Button Text="Готово" Command="{Binding GoToRacePageCommand}" HorizontalOptions="FillAndExpand"/>
+            <Button Text="Готово" Command="{Binding RaceEditingDoneCommand}" HorizontalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

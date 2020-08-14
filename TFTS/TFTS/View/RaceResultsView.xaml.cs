@@ -15,7 +15,7 @@ namespace TFTS.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaceResultsView : ContentPage
     {
-        public RaceResultsView(Race race)
+        public RaceResultsView(RaceViewModel race)
         {
             InitializeComponent();
             BindingContext = race;

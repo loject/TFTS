@@ -10,9 +10,9 @@ namespace TFTS.Model
         public string Name { get; set; } = "Runner";
         public ObservableCollection<float> CheckPoints { get; private set; } = new ObservableCollection<float>();
         public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
-        public Race Race { get; private set; }
+        public RaceViewModel Race { get; private set; }
 
-        public RunnerModel(string Name, float Distance, Race race)
+        public RunnerModel(string Name, float Distance, RaceViewModel race)
         {
             this.Name = Name;
             Race = race;
