@@ -54,7 +54,7 @@
                         <SwipeView.RightItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Убрать круг" BackgroundColor="LightPink" 
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteLapCommand}"
+                                                    Command="{Binding .race.DeleteLapCommand}"
                                                     CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
@@ -77,11 +77,11 @@
                 <ViewCell>
                     <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}" BackgroundColor="{Binding .LapsLeft, Converter={StaticResource RunnerPositionToColorConverter}}">
                         <Button Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}" 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LapDoneCommand}"
-                                                CommandParameter="{Binding .}"  FontSize="14">
+                                                Command="{Binding .race.LapDoneCommand}"
+                                                CommandParameter="{Binding .}" FontSize="14">
                             <Button.Triggers>
-                                <DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsRunning}" Value="False">
-                                    <Setter Property="Command" Value="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowRunnerResultCommand}"/>
+                                <DataTrigger TargetType="Button" Binding="{Binding .race.IsRunning}" Value="False">
+                                    <Setter Property="Command" Value="{Binding .race.ShowRunnerResultCommand}"/>
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
@@ -122,9 +122,8 @@
                 <Frame BorderColor="DarkGray" Padding="5" HorizontalOptions="CenterAndExpand">
                     <Label Text="{Binding TotalTime}" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"/>
                 </Frame>
-                <Label Text="{Binding LapsCount}" x:Name="temp1" FontSize="25" FontAttributes="Bold" 
-                        Margin="5"
-                       VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding LapsCount}" FontSize="25" FontAttributes="Bold" 
+                        Margin="5" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
             </StackLayout>
 
             <ListView x:Name="RunnersList" ItemsSource="{Binding Runners}" SelectionMode="None" ItemTemplate="{StaticResource LapDoneBySwipeOn}">

@@ -1,8 +1,6 @@
-﻿using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -223,18 +221,6 @@ namespace TFTS.ViewModel
                 {
                     /* TODO: error massage */
                 }
-            },
-            (Runner runner) =>
-            {
-                try
-                {
-                    return runner.LapsLeft > 0;
-                }
-                catch
-                {
-                    /* TODO: error massage */
-                }
-                return false;
             });
         }
         public ICommand ShowRunnerResultCommand 

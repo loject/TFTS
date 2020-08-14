@@ -21,7 +21,7 @@ namespace TFTS.ViewModel
     public class Runner : INotifyPropertyChanged, IComparable
     {
         private string name_ = "Runner";
-        private Race race_;
+        public Race race { get; private set; }
         public string Name { get { return name_; } set { name_ = value; OnPropertyChanged(nameof(Name)); } }
         public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
 
@@ -31,19 +31,20 @@ namespace TFTS.ViewModel
         }
         public Runner(string name)
         {
-            Name = name;
+            this.Name = name;
         }
+
         public Runner(string name, Race race)
         {
-            Name = name;
-            race_ = race;
+            this.Name = name;
+            this.race = race;
         }
         #endregion
 
-        public float LapsOvercome { get => DistanceOvercome / race_.LapLength; }
-        public float DistanceLeft { get => race_.Distance - DistanceOvercome; }
-        public float LapsLeft { get => DistanceLeft / race_.LapLength; }
-        public float LapsGoal { get => race_.Distance / race_.LapLength; }
+        public float LapsOvercome { get => DistanceOvercome / race.LapLength; }
+        public float DistanceLeft { get => race.Distance - DistanceOvercome; }
+        public float LapsLeft { get => DistanceLeft / race.LapLength; }
+        public float LapsGoal { get => race.Distance / race.LapLength; }
         public string BestLapTime
         {
             get
@@ -152,6 +153,7 @@ namespace TFTS.ViewModel
         /* greater - faster */
         public int CompareTo(object obj)
         {
+            /* mb compare distance */
             var x = this;
             var y = obj as Runner;
             if (x.LapsOvercome != y.LapsOvercome)
