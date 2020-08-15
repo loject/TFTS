@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Android.Content;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -104,17 +105,22 @@ namespace TFTS.ViewModel
             {
                 try
                 {
-                    for (int i = 0; i < Runners.Count; ++i)
+                    string ErrorStr = Validate();
+                    if (string.IsNullOrEmpty(ErrorStr))
                     {
-                        if (Runners[i].Name == "") Runners.RemoveAt(i--);
-                        else float.Parse(Runners[i].Distance);
+                        Race.Reset();
+                        Race.Distance = float.Parse(Distance);
+                        Race.LapLength = float.Parse(LapLength);
+                        Race.Runners = new SortableObservableCollection<RunnerViewModel>(
+                            Runners.Select(runner => new RunnerViewModel(new RunnerModel(runner.Name, float.Parse(runner.Distance), Race))
+                            ).ToList());
+                        Race.OnPropertyChanged(nameof(Runners));
+                        await Navigation.PopAsync(true);
                     }
-                    Race.Reset();
-                    Race.Runners = new SortableObservableCollection<RunnerViewModel>(
-                        Runners.Select(runner => new RunnerViewModel(new RunnerModel(runner.Name, float.Parse(runner.Distance), Race))
-                        ).ToList());
-                    Race.OnPropertyChanged(nameof(Runners));
-                    await Navigation.PopAsync(true);
+                    else
+                    {
+                        await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -131,6 +137,62 @@ namespace TFTS.ViewModel
         }
         #endregion
         #region misc
+        /**
+         * validate data in entyes
+         * * validate that all distances can be parsed to float
+         * * no repeated names
+         * * no empty names
+         * * race distance greater than runners distance
+         * @return string that contain error string if error is ocured, empty if no errors
+         * */
+        public string Validate()
+        {
+            string ErrorStr = "";
+            /* validate distance */
+            if (!float.TryParse(Distance, out _))
+            {
+                ErrorStr += $"Некорректная дистанция забега\n";
+                return ErrorStr;
+            }
+            /* validate lap length */
+            if (!float.TryParse(LapLength, out _))
+            {
+                ErrorStr += $"Некорректная длина круга\n";
+                return ErrorStr;
+            }
+            /* validate runners list */
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                /* empty name */
+                if (Runners[i].Name == "")
+                {
+                    Runners.RemoveAt(i--);
+                    continue;
+                }
+                /* correct distance */
+                if (!float.TryParse(Runners[i].Distance, out _))
+                {
+                    ErrorStr += $"У {Runners[i].Name} некорректная дистанция\n";
+                    continue;
+                }
+                /* runner distance should be less than race distance */
+                if (float.Parse(Runners[i].Distance) > float.Parse(Distance))
+                {
+                    ErrorStr += $"У {Runners[i].Name} слишком большая дистанция\n";
+                    continue;
+                }
+                /* no reapeated names */
+                for (int j = i + 1; j < Runners.Count; ++j)
+                {
+                    if (Runners[i].Name == Runners[j].Name)
+                    {
+                        ErrorStr += $"{Runners[i].Name} указан несколько раз\n";
+                        break;
+                    }
+                }
+            }
+            return ErrorStr;
+        }
         public bool IndividualDistance { get => SettingsModel.IndividualDistance; }
         #endregion
         #region INotifyPropertyChanged interface implement

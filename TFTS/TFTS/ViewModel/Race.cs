@@ -16,7 +16,6 @@ namespace TFTS.ViewModel
     public class RaceViewModel : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        [assembly: InternalsVisibleTo("RaceSetUpViewModel")]
         public SortableObservableCollection<RunnerViewModel> Runners { get; set; } = new SortableObservableCollection<RunnerViewModel>();
         private float distance_ = 1500;
         private float lapLength_ = 200;
@@ -316,10 +315,8 @@ namespace TFTS.ViewModel
 }
 
 /* TODO: 
- * same name runners
  * optimize lapDoneCommand
  * dont turn off screen 
  * fix overrunned laps 
- * validate race done command
  * export overruned laps
  */
