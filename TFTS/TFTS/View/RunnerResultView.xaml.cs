@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TFTS.Model;
 using TFTS.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -13,11 +14,11 @@ namespace TFTS.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RunnerResultView : ContentPage
     {
-        public Runner Runner { get; }
+        public RunnerViewModel Runner { get; }
         public string StartTime { get; }
         public string Distance { get; }
         public string About { get => $"{Runner.Name}.\nДистанция {Distance} метров.\nСтарт {StartTime}"; }
-        public RunnerResultView(Runner runner, string startTime, string distance)
+        public RunnerResultView(RunnerViewModel runner, string startTime, string distance)
         {
             InitializeComponent();
             Runner = runner;
@@ -25,7 +26,6 @@ namespace TFTS.View
             Distance = distance;
             BindingContext = this;
         }
-
     }
 
     public class IndexFromListConverter : IValueConverter

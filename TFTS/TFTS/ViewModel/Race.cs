@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using TFTS.misc;
+using TFTS.Model;
 using TFTS.View;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModel
 {
-    public class Race : INotifyPropertyChanged
+    public class RaceViewModel : INotifyPropertyChanged
     {
         private INavigation Navigation;
-        public SortableObservableCollection<Runner> Runners { get; private set; }
-        private float distance_ = 3000;
+        public SortableObservableCollection<RunnerViewModel> Runners { get; set; } = new SortableObservableCollection<RunnerViewModel>();
+        private float distance_ = 1500;
         private float lapLength_ = 200;
         private DateTime startTime = new DateTime();
         private Stopwatch timer_ = new Stopwatch();
@@ -29,79 +31,62 @@ namespace TFTS.ViewModel
         public string StartTime { get => startTime.ToString(); }
 
         #region constructors
-        public Race(INavigation navigation)
+        public RaceViewModel(INavigation navigation)
         {
-
-            Runners = new SortableObservableCollection<Runner>
-            {
-                new Runner("Runner", this),
-                new Runner("Runner1", this),
-                new Runner("Runner2", this),
-                new Runner("Runner3", this),
-            };
-
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceSetUpView(this));
+            Navigation.PushAsync(new View.RaceView(this));
         }
         #endregion
         #region RaceSetUp commands
-        public ICommand AddNewRunnerCommand
-        {
-            get => new Command(() => Runners.Add(new Runner("Runner", this)));
-        }
-        public ICommand GoToRacePageCommand
-        {
-            get => new Command(() =>
-            {
-                try
-                {
-                    foreach (var i in Runners)
-                        if (i.Name == "")
-                            Runners.Remove(i);
-                    Navigation.PushAsync(new View.RaceView(this));
-                    Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
-                }
-                catch
-                {
-                };
-            });
-        }
         #endregion
         #region RaceViewCommands
         public ICommand StartStopCommand
         {
             get => new Command(() =>
             {
-                if (IsRunning)
+                try
                 {
-                    timer_.Stop();
-                }
-                else
-                {
-                    if (timer_.ElapsedMilliseconds == 0) startTime = DateTime.Now;
-                    timer_.Start();
-                    Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+                    if (IsRunning)
                     {
-                        OnPropertyChanged(nameof(TotalTime));
-                        return timer_.IsRunning;
-                    });
+                        timer_.Stop();
+                    }
+                    else
+                    {
+                        if (timer_.ElapsedMilliseconds == 0) startTime = DateTime.Now;
+                        timer_.Start();
+                        Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+                        {
+                            OnPropertyChanged(nameof(TotalTime));
+                            return timer_.IsRunning;
+                        });
+                    }
+                    OnPropertyChanged(nameof(IsRunning));
                 }
-                OnPropertyChanged(nameof(IsRunning));
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+
+                }
             });
         }
         public ICommand ResetCommand
         {
             get => new Command(async () =>
             {
-                bool choiceIsStop = await Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
-                if (choiceIsStop == true)
+                try
                 {
-                    timer_.Reset();
-                    foreach (Runner runner in Runners)
-                        runner.Clear();
-                    OnPropertyChanged(nameof(TotalTime));
-                    OnPropertyChanged(nameof(IsRunning));
-                    OnPropertyChanged(nameof(Runners));
+                    bool choiceIsStop = await Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
+                    if (choiceIsStop == true)
+                    {
+                        Reset();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("error - " + e.Message);
                 }
             });
         }
@@ -109,19 +94,35 @@ namespace TFTS.ViewModel
         {
             get => new Command(() =>
             {
-                Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+                try
+                {
+                    Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                catch
+                {
+                    Console.WriteLine("Error");
+                }
             });
         }
-        public ICommand ExportFileCommand
+        public ICommand ExportXLSXFileCommand
         {
             get => new Command(() =>
             {
                 try
                 {
-                    var fn = "TFTS_" + DateTime.Now.ToString() + ".csv";
+                    var fn = "TFTS_" + DateTime.Now.ToString() + ".xlsx";
                     var file = Path.Combine(FileSystem.CacheDirectory, fn);
-                    File.WriteAllText(file, GetRaceResultCSV());
+                    var xlsx = GetRaceResultXLSX();
+                    xlsx.Write(File.Create(file));
                     Share.RequestAsync(new ShareFileRequest(file: new ShareFile(file), title: fn));
+                }
+                catch (Exception e)
+                {
+                    Navigation.NavigationStack[Navigation.NavigationStack.Count - 1].DisplayAlert("Error", e.Message, "OK");
                 }
                 catch
                 {
@@ -132,21 +133,13 @@ namespace TFTS.ViewModel
         public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this)); }); }
         public ICommand LapDoneCommand
         {
-            get => new Command<Runner>((Runner runner) =>
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) =>
             {
                 try
                 {
                     int position = 1;
-                    foreach (Runner runner1 in Runners) if (runner1.Laps.Count > runner.Laps.Count) position++;
-                    float lapLength = lapLength_;
-                    if (UnevenLaps)
-                    {
-                        if (FirstLapAlwaysFull && runner.LapsLeft < 1 && runner.LapsLeft > 0
-                            || !FirstLapAlwaysFull && runner.LapsOvercome == 0)
-                        {
-                            lapLength = Distance % LapLength;
-                        }
-                    }
+                    foreach (RunnerViewModel runner1 in Runners) if (runner1.Runner.Laps.Count > runner.Runner.Laps.Count) position++;
+                    float lapLength = (runner.IsFinished ? LapLength: runner.Runner.CheckPoints[(int)Math.Ceiling(runner.LapsOvercome)]);
                     runner.LapDone(new Lap
                     {
                         Length = lapLength,
@@ -154,62 +147,52 @@ namespace TFTS.ViewModel
                         Position = position
                     });
 
-                    if (SortBest)
+                    if (SettingsModel.SortBest == RunnersSortingType.SortImmediately)
                     {
-                        /* greater - faster */
-                        Runners.Sort(new Comparison<Runner>((a, b) => {
-                            if (a.LapsOvercome != b.LapsOvercome)
-                            {
-                                if (MoveFinishedToEnd && (a.IsFinished && !b.IsFinished || !a.IsFinished && b.IsFinished))
-                                {
-                                    if (a.IsFinished && !b.IsFinished)
-                                        return 1;
-                                    if (!a.IsFinished && b.IsFinished)
-                                        return -1;
-                                }
-                                if (a.LapsOvercome > b.LapsOvercome)
-                                    return -1;
-                                if (a.LapsOvercome < b.LapsOvercome)
-                                    return 1;
-                            }
-                            if (a.LapsOvercome == 0)
-                                return 0;
-
-                            int lastLapId = a.Laps.Count - 1;
-                            if (a.Laps[lastLapId].Time == b.Laps[lastLapId].Time) return 0;
-                            return (a.Laps[lastLapId].Time > b.Laps[lastLapId].Time) ? 1 : -1;
-                        }));
+                        Runners.Sort();
+                    }
+                    else if (SettingsModel.SortBest == RunnersSortingType.SortAfterLastLapDone)
+                    {
+                        if (position == Runners.Count)
+                        {
+                            Runners.Sort();
+                        }
+                    }
+                    if (SettingsModel.VibrationOnLapDone)
+                    {
+                        Vibration.Vibrate(SettingsModel.VibrationOnLapDoneLength);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    /* TODO: error massage */
-                }
-            },
-            (Runner runner) =>
-            {
-                try
-                {
-                    return runner.LapsLeft > 0;
+                    Console.WriteLine("Error - " + e.Message);
                 }
                 catch
                 {
                     /* TODO: error massage */
                 }
-                return false;
             });
         }
         public ICommand ShowRunnerResultCommand 
         { 
-            get => new Command<Runner>((Runner runner) => { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { Navigation.PushModalAsync(new RunnerResultView(runner, startTime.ToString(), Distance.ToString())); });
         }
         public ICommand DeleteLapCommand
         {
-            get => new Command<Runner>((Runner runner) => { if (runner.Laps.Count != 0) runner.RemoveLap(runner.Laps.Count - 1); });
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => { if (runner.Runner.Laps.Count != 0) runner.RemoveLap(runner.Runner.Laps.Count - 1); });
         }
 
         #endregion
         #region misc
+        public void Reset()
+        {
+            timer_.Reset();
+            foreach (RunnerViewModel runner in Runners)
+                runner.Clear();
+            OnPropertyChanged(nameof(TotalTime));
+            OnPropertyChanged(nameof(IsRunning));
+            OnPropertyChanged(nameof(Runners));
+        }
         private string GetRaceResultCSV()
         {
             string separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
@@ -226,28 +209,114 @@ namespace TFTS.ViewModel
             for (int i = 0; i < Runners.Count; ++i)
             {
                 res += Runners[i].Name + separator;
-                for (int j = 0; j < Runners[i].Laps.Count; ++j)
+                for (int j = 0; j < Runners[i].Runner.Laps.Count; ++j)
                 {
-                    res += Utils.getStringFromTimeSpan(Runners[i].Laps[j].Time) + "(" + Runners[i].Laps[j].Position.ToString() + ")" + separator;
+                    res += Utils.getStringFromTimeSpan(Runners[i].Runner.Laps[j].Time) + "(" + Runners[i].Runner.Laps[j].Position.ToString() + ")" + separator;
                 }
                 res += "\n";
             }
 
             return res;
         }
+        public IWorkbook GetRaceResultXLSX()
+        {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet("sheet1");
+
+            sheet.CreateRow(0).CreateCell(0).SetCellValue("Начало");          sheet.GetRow(0).CreateCell(1).SetCellValue(startTime.ToString());
+            sheet.CreateRow(1).CreateCell(0).SetCellValue("Дистанция");       sheet.GetRow(1).CreateCell(1).SetCellValue(Distance);
+            sheet.CreateRow(2).CreateCell(0).SetCellValue("Длинна круга");    sheet.GetRow(2).CreateCell(1).SetCellValue(LapLength);
+
+            int RowId = 4;
+            /* laps times */
+            /* TODO: replace this with overome distance */
+            int CeilLapsCount = (int)Math.Ceiling(LapsCount);
+            sheet.CreateRow(RowId).CreateCell(0).SetCellValue("Спортсмен");
+            /* TODO: fix this check */
+            if (SettingsModel.FirstLapAlwaysFull)
+            {
+                for (float i = 1; i < CeilLapsCount; ++i)
+                {
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i) - 1).SetCellValue($"Время {i}-го круга");
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i)).SetCellValue($"Позиция на {i}-ом круге");
+                }
+                sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount - 1).SetCellValue($"Время {LapsCount}-го круга");
+                sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount).SetCellValue($"Позиция на {LapsCount}-ом круге");
+            }
+            else
+            {
+                var FirstLapRatio = (Distance % LapLength == 0) ? 1 : (Distance % LapLength) / LapLength;
+                for (float i = FirstLapRatio; i <= CeilLapsCount; ++i)
+                {
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i) - 1).SetCellValue($"Время {i}-го круга");
+                    sheet.GetRow(RowId).CreateCell(2 * (int)Math.Ceiling(i)).SetCellValue($"Позиция на {i}-ом круге");
+                }
+            }
+            sheet.GetRow(RowId).CreateCell(2 * CeilLapsCount + 1).SetCellValue("Общее время");
+            RowId++;
+
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                var CurrentRow = sheet.CreateRow(RowId);
+                CurrentRow.CreateCell(0).SetCellValue(Runners[i].Name);
+                for (int j = 1; j <= Runners[i].Runner.Laps.Count; ++j)
+                {
+                    CurrentRow.CreateCell(2 * j - 1).SetCellValue(Runners[i].Runner.Laps[j - 1].Time.ToString());
+                    CurrentRow.CreateCell(2 * j).SetCellValue(Runners[i].Runner.Laps[j - 1].Position);
+                }
+                CurrentRow.CreateCell(2 * CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
+                RowId++;
+            }
+
+            /* overcome times */
+            /* TODO: replace this with overome distance */
+            RowId += 3;
+            sheet.CreateRow(RowId).CreateCell(0).SetCellValue("Спортсмен");
+            /* TODO: fix this check */
+            if (SettingsModel.FirstLapAlwaysFull)
+            {
+                for (float i = 1; i <= CeilLapsCount; ++i)
+                    sheet.GetRow(RowId).CreateCell((int)Math.Ceiling(i)).SetCellValue($"{i}-й круг");
+                sheet.GetRow(RowId).CreateCell(CeilLapsCount).SetCellValue($"{LapsCount}-й круг");
+            }
+            else
+            {
+                var FirstLapRatio = (Distance % LapLength == 0) ? 1 : (Distance % LapLength) / LapLength;
+                for (float i = FirstLapRatio; i <= CeilLapsCount; ++i)
+                    sheet.GetRow(RowId).CreateCell((int)Math.Ceiling(i)).SetCellValue($"{i}-й круг");
+            }
+            sheet.GetRow(RowId).CreateCell(CeilLapsCount + 1).SetCellValue("Общее время");
+            RowId++;
+            for (int i = 0; i < Runners.Count; ++i)
+            {
+                var row = sheet.CreateRow(RowId);
+                var time = TimeSpan.Zero;
+                row.CreateCell(0).SetCellValue(Runners[i].Name);
+                for (int j = 1; j <= Runners[i].Runner.Laps.Count; ++j)
+                {
+                    time += Runners[i].Runner.Laps[j - 1].Time;
+                    row.CreateCell(j).SetCellValue(time.ToString());
+                }
+                row.CreateCell(CeilLapsCount + 1).SetCellValue(Runners[i].TotalTime.ToString());
+                RowId++;
+            }
+
+            return workbook;
+        }
         #endregion
         #region INotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
+        public void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-        #region settings
-        public bool LapDoneBySwipe { get => Preferences.Get(nameof(LapDoneBySwipe), false); }
-        public bool FirstLapAlwaysFull { get => Preferences.Get(nameof(FirstLapAlwaysFull), false); }
-        public bool SortBest { get => Preferences.Get(nameof(SortBest), false); }
-        public bool MoveFinishedToEnd { get => Preferences.Get(nameof(MoveFinishedToEnd), false); }
-        #endregion
     }
 }
+
+/* TODO: 
+ * optimize lapDoneCommand
+ * dont turn off screen 
+ * fix overrunned laps 
+ * export overruned laps
+ */

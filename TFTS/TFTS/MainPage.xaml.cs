@@ -23,7 +23,7 @@ namespace TFTS
 
         private void BtnTempo_Clicked(object sender, EventArgs e)
         {
-            new Race(Navigation);
+            new RaceSetUpViewModel(Navigation);
         }
 
         private async void BtnWork_ClickedAsync(object sender, EventArgs e)

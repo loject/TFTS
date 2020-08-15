@@ -3,43 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:TFTS.Converters"
+             xmlns:CustomView="clr-namespace:TFTS.misc.CustomView"
              Title="Настройки"
              mc:Ignorable="d"
              x:Class="TFTS.View.SettingView">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IntToStringConverter x:Key="IntToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView VerticalOptions="Start" Padding="10">
-            <!-- TODO: fix this layout -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" Text="Управление" FontSize="Title" />
-                <Label Grid.Column="0" Grid.Row="1" Text="Завершение круга по свайпу" TextColor="Black" FontSize="Medium" />
-                <Switch Grid.Column="1" Grid.Row="1" IsToggled="{Binding LapDoneBySwipe}"/>
-                <Label Grid.Column="0" Grid.Row="2" Text="Первый круг всегда полный(если количество кругов не целое)" TextColor="Black" FontSize="Medium" />
-                <Switch Grid.Column="1" Grid.Row="2" IsToggled="{Binding FirstLapAlwaysFull}"/>
-                <Label Grid.Column="0" Grid.Row="3" Text="Сортировка лучших" TextColor="Black" FontSize="Medium" />
-                <Switch Grid.Column="1" Grid.Row="3" IsToggled="{Binding SortBest}"/>
-                <Label Grid.Column="0" Grid.Row="4" Text="Перемещать в конец финишировавших" TextColor="Black" FontSize="Medium" />
-                <Switch Grid.Column="1" Grid.Row="4" IsToggled="{Binding MoveFinishedToEnd}">
-                    <Switch.Triggers>
-                        <DataTrigger TargetType="Switch" Binding="{Binding SortBest}" Value="false">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Switch.Triggers>
-                </Switch>
-            </Grid>
+            <TableView>
+                <TableRoot>
+                    <TableSection Title="Управление">
+                        <SwitchCell Text="Завершение круга по свайпу" On="{Binding LapDoneBySwipe}"/>
+                        <SwitchCell Text="Первый круг всегда полный(если количество кругов не целое)" On="{Binding FirstLapAlwaysFull}"/>
+                        <SwitchCell Text="Вибрировать при завершении круга" On="{Binding VibrationOnLapDone}"/>
+                        <EntryCell  Label="Длительность вибрации" Text="{Binding VibrationOnLapDoneLength, Converter={StaticResource IntToStringConverter}}" Keyboard="Numeric"/>
+                        <SwitchCell Text="Индивидуальные дистанции" On="{Binding IndividualDistance}"/>
+                    </TableSection>
+                    <TableSection Title="Вид">
+                        <CustomView:PickerCell Title="Сортировать лучших" Label="Сортировать лучших" ItemsSource="{Binding SortBestPosibleValues}" SelectedValue="{Binding SortBest}"/>
+                        <SwitchCell Text="Перемещать в конец финишировавших" On="{Binding MoveFinishedToEnd}" IsEnabled="{Binding MoveFinishedToEndIsEnabled}"/>
+                        <SwitchCell Text="Режим левши" On="{Binding LeftHandMode}"/>
+                        <SwitchCell Text="Выделять цветом финиширующих" On="{Binding HighlightFinishers}"/>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>
