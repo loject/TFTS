@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
-namespace TFTS.misc.CustomView
+namespace TFTS.CustomView
 {
     [ContentProperty("Items")]
     public partial class PickerCell : ViewCell

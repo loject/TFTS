@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TFTS.misc.CustomView.PickerCell"
+             x:Class="TFTS.CustomView.PickerCell"
              x:Name="cell">
   <ViewCell.View>
         <StackLayout Orientation="Horizontal"
