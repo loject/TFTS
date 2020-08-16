@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-using TFTS.Model;
-using TFTS.View;
+using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Forms;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
     public class RunnerViewModel : INotifyPropertyChanged
     {

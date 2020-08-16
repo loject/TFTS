@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="misc\CustomView\PickerCell.cs" />
+    <Compile Remove="CustomView\PickerCell.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,31 +30,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="misc\CustomView\PickerCell.xaml.cs">
+    <Compile Update="CustomView\PickerCell.xaml.cs">
       <DependentUpon>PickerCell.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\RaceResultsView.xaml.cs">
+    <Compile Update="Views\RaceResultsView.xaml.cs">
       <DependentUpon>RaceResultsView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="View\RaceSetUpView.xaml.cs">
+    <Compile Update="Views\RaceSetUpView.xaml.cs">
       <DependentUpon>RaceSetUpView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="View\RaceResultsView.xaml">
+    <EmbeddedResource Update="Views\RaceResultsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\RaceSetUpView.xaml">
+    <EmbeddedResource Update="Views\RaceSetUpView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\RaceView.xaml">
+    <EmbeddedResource Update="Views\RaceView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\RunnerResultView.xaml">
+    <EmbeddedResource Update="Views\RunnerResultView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\SettingView.xaml">
+    <EmbeddedResource Update="Views\SettingView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

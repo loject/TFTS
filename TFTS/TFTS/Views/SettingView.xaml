@@ -7,7 +7,7 @@
              xmlns:CustomView="clr-namespace:TFTS.CustomView"
              Title="Настройки"
              mc:Ignorable="d"
-             x:Class="TFTS.View.SettingView">
+             x:Class="TFTS.Views.SettingView">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IntToStringConverter x:Key="IntToStringConverter" />

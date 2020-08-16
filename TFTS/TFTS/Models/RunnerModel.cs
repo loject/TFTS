@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using TFTS.ViewModel;
+using TFTS.ViewModels;
 using Xamarin.Essentials;
 
-namespace TFTS.Model
+namespace TFTS.Models
 {
     public class RunnerModel : IComparable
     {

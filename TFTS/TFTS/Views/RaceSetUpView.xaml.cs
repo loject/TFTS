@@ -1,8 +1,8 @@
-﻿using TFTS.ViewModel;
+﻿using TFTS.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace TFTS.View
+namespace TFTS.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaceSetUpView : ContentPage

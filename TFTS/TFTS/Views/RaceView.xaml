@@ -8,7 +8,7 @@
              Title="Забег"
              x:Name="RaceViewPage"
              mc:Ignorable="d"
-             x:Class="TFTS.View.RaceView">
+             x:Class="TFTS.Views.RaceView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -27,7 +27,7 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                    <DataTrigger TargetType="Grid" Binding="{Binding Source={x:Static local:Model.SettingsModel.LeftHandMode}}" Value="true">
+                    <DataTrigger TargetType="Grid" Binding="{Binding Source={x:Static local:Models.SettingsModel.LeftHandMode}}" Value="true">
                         <Setter Property="ColumnDefinitions">
                             <Setter.Value>
                                 <ColumnDefinitionCollection>
@@ -146,7 +146,7 @@
                     </Grid>
                 </ListView.Header>
                 <ListView.Triggers>
-                    <DataTrigger TargetType="ListView" Binding="{Binding Source={x:Static local:Model.SettingsModel.LapDoneBySwipe}}" Value="false">
+                    <DataTrigger TargetType="ListView" Binding="{Binding Source={x:Static local:Models.SettingsModel.LapDoneBySwipe}}" Value="false">
                         <Setter Property="ItemTemplate" Value="{StaticResource LapDoneBySwipeOFF}"/>
                     </DataTrigger>
                 </ListView.Triggers>

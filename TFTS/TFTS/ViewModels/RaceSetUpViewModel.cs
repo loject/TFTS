@@ -1,16 +1,14 @@
-﻿using Android.Content;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using TFTS.misc;
-using TFTS.Model;
+using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Forms;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
     public class SimpleRunner : INotifyPropertyChanged
     {
@@ -92,7 +90,7 @@ namespace TFTS.ViewModel
             }
 
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceSetUpView(this));
+            Navigation.PushAsync(new RaceSetUpView(this));
         }
         #region Commands
         public ICommand AddNewRunnerCommand

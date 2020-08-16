@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using TFTS.Model;
+using TFTS.Models;
 using Xamarin.Essentials;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
     class SettingsViewModel : INotifyPropertyChanged
     {

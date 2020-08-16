@@ -1,8 +1,7 @@
-﻿using NPOI.HSSF.Record;
-using System;
+﻿using System;
 using Xamarin.Essentials;
 
-namespace TFTS.Model
+namespace TFTS.Models
 {
     enum RunnersSortingType
     {

@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              Title="Формирование забега"
              x:Name="RaceSetUpViewContentPage"
-             x:Class="TFTS.View.RaceSetUpView">
+             x:Class="TFTS.Views.RaceSetUpView">
     <ContentPage.Content>
         <StackLayout>
 

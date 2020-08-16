@@ -1,19 +1,17 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Input;
 using TFTS.misc;
-using TFTS.Model;
-using TFTS.View;
+using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
     public class RaceViewModel : INotifyPropertyChanged
     {
@@ -45,7 +43,7 @@ namespace TFTS.ViewModel
         {
             Race = race ?? new RaceModel();
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceView(this));
+            Navigation.PushAsync(new RaceView(this));
         }
         #endregion
         #region RaceViewCommands

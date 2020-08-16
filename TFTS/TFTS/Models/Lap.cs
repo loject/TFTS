@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace TFTS.Model
+namespace TFTS.Models
 {
     public struct Lap
     {

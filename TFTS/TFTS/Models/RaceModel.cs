@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TFTS.misc;
 
-namespace TFTS.Model
+namespace TFTS.Models
 {
     public class RaceModel
     {
