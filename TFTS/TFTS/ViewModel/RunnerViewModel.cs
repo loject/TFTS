@@ -1,48 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 using TFTS.Model;
+using TFTS.View;
+using Xamarin.Forms;
 
 namespace TFTS.ViewModel
 {
-    public class RunnerViewModel : INotifyPropertyChanged, IComparable
+    public class RunnerViewModel : INotifyPropertyChanged
     {
         public RunnerModel Runner { get; private set; }
+        public RaceViewModel Race { get; private set; }/* for update when sort */
         public string Name { get { return Runner.Name; } set { Runner.Name = value; OnPropertyChanged(nameof(Name)); } }
 
-        public RunnerViewModel(RunnerModel runner) => this.Runner = runner;
+        public RunnerViewModel(RunnerModel runner, RaceViewModel race)
+        {
+            Runner = runner;
+            Race = race;
+        }
 
         public float LapsOvercome { get => DistanceOvercome / Runner.Race.LapLength; }
         public float DistanceLeft { get => Runner.TotalDistance - DistanceOvercome; }
         public float LapsLeft { get => DistanceLeft / Runner.Race.LapLength; }
-        public float LapsGoal { get => Runner.TotalDistance / Runner.Race.LapLength; }
+        public float LapsGoal { get => Runner.LapsGoal; }
         public string BestLapTime { get => Utils.getStringFromTimeSpan(Runner.Laps.OrderBy(lap => lap.Time).Take(1).Select(Lap => Lap.Time).FirstOrDefault(), "Н/С"); }
         public string LastLapTime { get => Utils.getStringFromTimeSpan(Runner.Laps.LastOrDefault().Time, "Н/С"); }
-        public TimeSpan TotalTime { get { TimeSpan res = TimeSpan.Zero; foreach (Lap lap in Runner.Laps) res += lap.Time; return res; } }
-        public float DistanceOvercome { get => Runner.Laps.Sum(lap => lap.Length); }
-        public bool IsFinished { get => LapsOvercome >= LapsGoal; }
+        public TimeSpan TotalTime { get => Runner.TotalTime; }
+        public float DistanceOvercome { get => Runner.DistanceOvercome; }
+        public bool IsFinished { get => Runner.IsFinished; }
 
-        public void LapDone(Lap lap)
+        #region commands
+        public ICommand LapDoneCommand
         {
-            try
+            get => new Command<TimeSpan>((TimeSpan now) =>
             {
-                Runner.Laps.Add(lap);
+                Runner.LapDone(now);
                 OnPropertyChanged(nameof(LapsLeft));
                 OnPropertyChanged(nameof(LapsOvercome));
                 OnPropertyChanged(nameof(BestLapTime));
                 OnPropertyChanged(nameof(LastLapTime));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error - " + e.Message);
-            }
-            catch
-            {
-                Console.WriteLine("Error");
-            }
+                Race.OnPropertyChanged("Runners");
+            });
         }
+        public ICommand ShowRunnerResultCommand
+        {
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => 
+            { 
+                Race.Navigation.PushModalAsync(new RunnerResultView(runner, Race.StartTime.ToString(), Runner.TotalDistance.ToString())); 
+            });
+        }
+        public ICommand DeleteLapCommand
+        {
+            get => new Command<RunnerViewModel>((RunnerViewModel runner) => 
+            { 
+                if (runner.Runner.Laps.Count != 0) 
+                    runner.RemoveLap(runner.Runner.Laps.Count - 1); 
+            });
+        }
+        #endregion
+        #region functions
         public void RemoveLap(int index)
         {
             try
@@ -62,7 +79,7 @@ namespace TFTS.ViewModel
                 Console.WriteLine("Error");
             }
         }
-        public void Clear()
+        public void Clear()/* TODO: delete this */
         {
             try
             {
@@ -81,34 +98,7 @@ namespace TFTS.ViewModel
                 Console.WriteLine("Error");
             }
         }
-
-        /* greater - faster */
-        public int CompareTo(object obj)
-        {
-            /* mb compare distance */
-            var x = this;
-            var y = obj as RunnerViewModel;
-            if (x.LapsOvercome != y.LapsOvercome)
-            {
-                if (SettingsModel.MoveFinishedToEnd && (x.IsFinished && !y.IsFinished || !x.IsFinished && y.IsFinished))
-                {
-                    if (x.IsFinished && !y.IsFinished)
-                        return 1;
-                    if (!x.IsFinished && y.IsFinished)
-                        return -1;
-                }
-                if (x.LapsOvercome > y.LapsOvercome)
-                    return -1;
-                if (x.LapsOvercome < y.LapsOvercome)
-                    return 1;
-            }
-            if (x.LapsOvercome == 0)
-                return 0;
-
-            int lastLapId = x.Runner.Laps.Count - 1;
-            if (x.Runner.Laps[lastLapId].Time == y.Runner.Laps[lastLapId].Time) return 0;
-            return (x.Runner.Laps[lastLapId].Time > y.Runner.Laps[lastLapId].Time) ? 1 : -1;
-        }
+        #endregion
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string name)

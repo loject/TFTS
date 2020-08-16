@@ -76,8 +76,8 @@ namespace TFTS.ViewModel
             {
                 Race = race;
                 Runners = new ObservableCollection<SimpleRunner>();
-                foreach (var runner in race.Runners)
-                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.Runner.TotalDistance.ToString() });
+                foreach (var runner in race.Race.Runners)
+                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.TotalDistance.ToString() });
             }
             else
             {
@@ -111,8 +111,8 @@ namespace TFTS.ViewModel
                         Race.Reset();
                         Race.Distance = float.Parse(Distance);
                         Race.LapLength = float.Parse(LapLength);
-                        Race.Runners = new SortableObservableCollection<RunnerViewModel>(
-                            Runners.Select(runner => new RunnerViewModel(new RunnerModel(runner.Name, float.Parse(runner.Distance), Race))
+                        Race.Race.Runners = new SortableObservableCollection<RunnerModel>(
+                            Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)
                             ).ToList());
                         Race.OnPropertyChanged(nameof(Runners));
                         await Navigation.PopAsync(true);

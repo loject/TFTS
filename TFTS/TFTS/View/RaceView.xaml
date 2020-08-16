@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:TFTS;assembly=TFTS"
              xmlns:converters="clr-namespace:TFTS.Converters"
              Title="Забег"
+             x:Name="RaceViewPage"
              mc:Ignorable="d"
              x:Class="TFTS.View.RaceView">
 
@@ -47,14 +48,14 @@
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 
-                                                    Command="{Binding .Runner.Race.LapDoneCommand}"
-                                                    CommandParameter="{Binding .}" />
+                                                    Command="{Binding LapDoneCommand}" 
+                                                    CommandParameter="{Binding Source={x:Reference RaceViewPage}, Path=BindingContext.TotalTime}" />
                             </SwipeItems>
                         </SwipeView.LeftItems>
                         <SwipeView.RightItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Убрать круг" BackgroundColor="LightPink" 
-                                                    Command="{Binding .Runner.Race.DeleteLapCommand}"
+                                                    Command="{Binding DeleteLapCommand}"
                                                     CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
@@ -76,12 +77,15 @@
             <DataTemplate x:Key="LapDoneBySwipeOFF">
                 <ViewCell>
                     <Grid Style="{StaticResource SouthpawModeIndependetColumnDefinitions}" BackgroundColor="{Binding .LapsLeft, Converter={StaticResource RunnerPositionToColorConverter}}">
-                        <Button Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}" 
-                                                Command="{Binding .Runner.Race.LapDoneCommand}"
-                                                CommandParameter="{Binding .}" FontSize="14">
+                        <Button Grid.Column="{Binding Converter={StaticResource SouthpawColumnConverter}, ConverterParameter=0}" Text="{Binding Name}" FontSize="14">
                             <Button.Triggers>
-                                <DataTrigger TargetType="Button" Binding="{Binding .Runner.Race.IsRunning}" Value="False">
-                                    <Setter Property="Command" Value="{Binding .Runner.Race.ShowRunnerResultCommand}"/>
+                                <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference RaceViewPage}, Path=BindingContext.IsRunning}" Value="False">
+                                    <Setter Property="Command" Value="{Binding ShowRunnerResultCommand}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding .}"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference RaceViewPage}, Path=BindingContext.IsRunning}" Value="True">
+                                    <Setter Property="Command" Value="{Binding LapDoneCommand}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding Source={x:Reference RaceViewPage}, Path=BindingContext.TotalTime}"/>
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
@@ -120,7 +124,7 @@
                 </Button>
 
                 <Frame BorderColor="DarkGray" Padding="5" HorizontalOptions="CenterAndExpand">
-                    <Label Text="{Binding TotalTime}" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"/>
+                    <Label Text="{Binding TotalTimeStr}" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"/>
                 </Frame>
                 <Label Text="{Binding LapsCount}" FontSize="25" FontAttributes="Bold" 
                         Margin="5" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
