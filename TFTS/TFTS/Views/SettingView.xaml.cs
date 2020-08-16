@@ -7,9 +7,9 @@ namespace TFTS.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingView : ContentPage
     {
-        public SettingView()
+        public SettingView(SettingsViewModel settingsViewModel)
         {
-            BindingContext = new SettingsViewModel();
+            BindingContext = settingsViewModel;
             InitializeComponent();
         }
     }

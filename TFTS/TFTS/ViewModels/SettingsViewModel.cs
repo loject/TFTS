@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace TFTS.ViewModels
 {
-    class SettingsViewModel : INotifyPropertyChanged
+    public class SettingsViewModel : INotifyPropertyChanged
     {
+        public INavigation Navigation { get; private set; }
         const int MaxVibrationLength = 10000;
         const int MinVibrationLength = 0;
+
+        public SettingsViewModel(INavigation navigation)
+        {
+            Navigation = navigation;
+            Navigation.PushAsync(new SettingView(this));
+        }
+
+        #region properties
         public bool LapDoneBySwipe
         {
             get => Preferences.Get(nameof(LapDoneBySwipe), false);
@@ -128,6 +139,7 @@ namespace TFTS.ViewModels
                 OnPropertyChanged(nameof(IndividualDistance));
             }
         }
+        #endregion
         #region misc
         public bool MoveFinishedToEndIsEnabled { get => SortBest != RunnersSortingType.DontSort.ToString(); }
         #endregion
