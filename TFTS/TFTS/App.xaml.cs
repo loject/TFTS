@@ -1,4 +1,7 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using TFTS.ViewModels;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace TFTS
 {
