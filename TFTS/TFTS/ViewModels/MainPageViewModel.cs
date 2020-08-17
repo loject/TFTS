@@ -25,9 +25,16 @@ namespace TFTS.ViewModels
                 await Navigation.NavigationStack[^1].DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
             });
         }
+        public ICommand GoToHistoryCommand
+        {
+            get => new Command(() =>
+            {
+                new HistoryViewModel(Navigation);
+            });
+        }
         public ICommand GoToSettingsCommand
         {
-            get => new Command(async () =>
+            get => new Command(() =>
             {
                 new SettingsViewModel(Navigation);
             });

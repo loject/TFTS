@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using TFTS.Models;
-using TFTS.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace TFTS
 {
