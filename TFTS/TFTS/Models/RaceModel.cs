@@ -10,14 +10,5 @@ namespace TFTS.Models
         public float Distance { get; set; }
         public float LapLength { get; set; }
         public SortableObservableCollection<RunnerModel> Runners { get; set; }
-
-        #region constructors
-        public RaceModel(float Distance = 1500, float LapLength = 200, SortableObservableCollection<RunnerModel> runners = null)
-        {
-            this.Distance = Distance;
-            this.LapLength = LapLength;
-            Runners = runners ?? new SortableObservableCollection<RunnerModel>();
-        }
-        #endregion
     }
 }
