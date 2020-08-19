@@ -20,7 +20,7 @@ namespace TFTS.ViewModels
     public class RaceViewModel : INotifyPropertyChanged
     {
         public INavigation Navigation { get; private set; }
-        public NavigationPage Page { get; private set; }
+        //public NavigationPage Page { get; private set; }
         public RaceModel Race { get; set; }
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
         private Stopwatch timer_ = new Stopwatch();
@@ -41,7 +41,15 @@ namespace TFTS.ViewModels
             Race = race ?? new RaceModel();
             Navigation = navigation;
             Navigation?.PushAsync(new RaceView(this));
-            Page = Navigation.NavigationStack[^1] as NavigationPage;
+            var Page = Navigation.NavigationStack[^1];
+            /* add exit listener for save race to db*/
+            (Application.Current.MainPage as NavigationPage).Popped += (object sender, NavigationEventArgs args) =>
+            {
+                if (args.Page == Page)
+                {
+                    SaveRaceToDB();
+                }
+            };
         }
         #endregion
         #region RaceViewCommands
@@ -259,6 +267,10 @@ namespace TFTS.ViewModels
 
             return workbook;
         }
+        private void SaveRaceToDB()
+        {
+            App.Database.SavePersonAsync(Race);
+        }
         #endregion
         #region INotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;
@@ -276,4 +288,5 @@ namespace TFTS.ViewModels
  * fix overrunned laps 
  * export overruned laps
  * Move to end finshed runners option in settings set isEnabled
+ * Add posibiliti to save race after each lapDone
  */
