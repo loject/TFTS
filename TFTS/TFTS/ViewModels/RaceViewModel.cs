@@ -1,49 +1,47 @@
-﻿using NPOI.SS.UserModel;
+﻿using Android.Content.Res;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using TFTS.misc;
 using TFTS.Models;
 using TFTS.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace TFTS.ViewModels
 {
     public class RaceViewModel : INotifyPropertyChanged
     {
         public INavigation Navigation { get; private set; }
+        public NavigationPage Page { get; private set; }
         public RaceModel Race { get; set; }
-        public SortableObservableCollection<RunnerViewModel> Runners 
-        {
-            get
-            {
-                var res = new SortableObservableCollection<RunnerViewModel>();
-                for (int i = 0; i < Race.Runners.Count; ++i)
-                    res.Add(new RunnerViewModel(Race.Runners[i], this));
-                return res;
-            }
-        }
+        public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
         private Stopwatch timer_ = new Stopwatch();
 
-        public float Distance { get => Race.Distance; set { Race.Distance = value; OnPropertyChanged(nameof(Distance)); } }
+        /* TODO: move to ImplementPropertyChanged and DependsOn */
+        public float Distance { get => Race.Distance; set { Race.Distance = value; OnPropertyChanged(nameof(Distance)); OnPropertyChanged(nameof(LapsCount)); OnPropertyChanged(nameof(UnevenLaps)); } }
         public float LapsCount { get => Race.Distance / Race.LapLength; }
         public TimeSpan TotalTime { get => timer_.Elapsed; }
         public string TotalTimeStr { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
-        public float LapLength { get => Race.LapLength; set { Race.LapLength= value; OnPropertyChanged(nameof(LapLength)); } }
+        public float LapLength { get => Race.LapLength; set { Race.LapLength= value; OnPropertyChanged(nameof(LapLength)); OnPropertyChanged(nameof(LapsCount)); OnPropertyChanged(nameof(UnevenLaps)); } }
         public bool UnevenLaps { get => Race.Distance % Race.LapLength != 0; }
         public string StartTime { get => Race.StartTime.ToString(); }
 
         #region constructors
-        public RaceViewModel(INavigation navigation, RaceModel race = null)
+        public RaceViewModel(INavigation navigation = null, RaceModel race = null)
         {
             Race = race ?? new RaceModel();
             Navigation = navigation;
-            Navigation.PushAsync(new RaceView(this));
+            Navigation?.PushAsync(new RaceView(this));
+            Page = Navigation.NavigationStack[^1] as NavigationPage;
         }
         #endregion
         #region RaceViewCommands
@@ -145,8 +143,7 @@ namespace TFTS.ViewModels
         public void Reset()
         {
             timer_.Reset();
-            foreach (RunnerModel runner in Race.Runners)
-                runner.Laps.Clear();
+            Race.Runners?.ForEach(r => r.Laps.Clear());
             OnPropertyChanged(nameof(TotalTimeStr));
             OnPropertyChanged(nameof(TotalTime));
             OnPropertyChanged(nameof(IsRunning));
@@ -278,4 +275,5 @@ namespace TFTS.ViewModels
  * dont turn off screen 
  * fix overrunned laps 
  * export overruned laps
+ * Move to end finshed runners option in settings set isEnabled
  */
