@@ -15,22 +15,9 @@ namespace TFTS.Views
         {
             InitializeComponent();
             BindingContext = race;
+            if (race == null) return;
 
             /* TOOD: move to race view model */
-            /* TODO: Delete this sort */
-            List<RunnerModel> tmp = race.Runners.Select(r => r).ToList();
-            tmp.Sort((RunnerModel a, RunnerModel b) => 
-            {
-                if (a.LapsOvercome == 0 && b.LapsOvercome == 0)
-                    return 0;
-                if (a.LapsOvercome != b.LapsOvercome)
-                    return (a.LapsOvercome > a.LapsOvercome) ? -1 : 1;
-                if (a.Laps[^1].Time != b.Laps[^1].Time)
-                    return (a.Laps[^1].Time > b.Laps[^1].Time) ? 1 : -1;
-                return 0;
-            });
-
-
             int CeilLapsCount = (int)Math.Ceiling(race.Distance / race.LapLength);
             grid.Children.Add(GetLabelWithText("Имя"), 0, 0);
             //for (int i = 1; i <= race.LapsCount; ++i) grid.Children.Add(GetLabelWithText("круг №" + i.ToString()), i, 0);
@@ -49,22 +36,22 @@ namespace TFTS.Views
             grid.Children.Add(GetLabelWithText("Общее время"), CeilLapsCount + 1, 0);
 
 
-            for (int i = 1; i <= tmp.Count; ++i)
+            for (int i = 1; i <= race.Runners.Count; ++i)
             {
                 string positionOnFinish = "Н/Ф";
-                if (tmp[i - 1].IsFinished)
+                if (race.Runners[i - 1].IsFinished)
                 {
-                    positionOnFinish = tmp[i - 1].Laps[CeilLapsCount - 1].Position.ToString();
+                    positionOnFinish = race.Runners[i - 1].Laps[CeilLapsCount - 1].Position.ToString();
                 }
-                grid.Children.Add(GetLabelWithText(tmp[i - 1].Name + "(" + positionOnFinish + ")"), 0, i);
+                grid.Children.Add(GetLabelWithText(race.Runners[i - 1].Name + "(" + positionOnFinish + ")"), 0, i);
                 for (int j = 1; j <= CeilLapsCount; ++j)
                 {
-                    if (tmp[i - 1].Laps.Count >= j)
-                        grid.Children.Add(GetLabelWithText(tmp[i - 1].Laps[j - 1].TimeStr + "(" + tmp[i - 1].Laps[j - 1].Position + "-й)"), j, i);
+                    if (race.Runners[i - 1].Laps.Count >= j)
+                        grid.Children.Add(GetLabelWithText(race.Runners[i - 1].Laps[j - 1].TimeStr + "(" + race.Runners[i - 1].Laps[j - 1].Position + "-й)"), j, i);
                     else
                         grid.Children.Add(GetLabelWithText("-"), j, i);
                 }
-                grid.Children.Add(GetLabelWithText(txt: Utils.getStringFromTimeSpan(tmp[i - 1].TotalTime)),
+                grid.Children.Add(GetLabelWithText(txt: Utils.getStringFromTimeSpan(race.Runners[i - 1].TotalTime)),
                                   CeilLapsCount + 1, i);
             }
         }
