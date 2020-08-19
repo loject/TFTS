@@ -1,13 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:Converters="clr-namespace:TFTS.Converters"
              Title="История"
+             x:Name="HistoryPageViewName"
              x:Class="TFTS.Views.HistoryPageView">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Converters:ConcatRunnersNamesConverter x:Key="ConcatRunnersNamesConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="History"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView>
+            <d:ListView ItemsSource="{Binding Races}" SelectionMode="None" HasUnevenRows="True">
+                <d:ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <d:Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <d:Label d:Grid.Row="0" d:Grid.Column="0" Text="{Binding StartTime}" 
+                                         HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontAttributes="Bold" FontSize="Subtitle"/>
+                                <d:Label d:Grid.Row="0" d:Grid.Column="1" HorizontalOptions="End">
+                                    <d:Label.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <Binding Path="LapsCount" />
+                                            <Binding Path="LapLength" />
+                                        </MultiBinding>
+                                    </d:Label.Text>
+                                </d:Label>
+                                <d:Label d:Grid.Row="1" d:Grid.Column="0" Text="{Binding Runners, Converter={StaticResource ConcatRunnersNamesConverter}}" 
+                                         HorizontalOptions="StartAndExpand"/>
+                                <d:Button d:Grid.Row="0" d:Grid.RowSpan="2" d:Grid.Column="2" Text="Результаты" 
+                                          Command="{Binding Source={x:Reference HistoryPageViewName}, Path=BindingContext.ShowResultPageCommand}"
+                                          CommandParameter="{Binding }" />
+                            </d:Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </d:ListView.ItemTemplate>
+            </d:ListView>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
