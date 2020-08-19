@@ -18,6 +18,7 @@ namespace TFTS.ViewModels
         }
         #region Commands
         public ICommand ShowResultPageCommand { get => new Command<RaceModel>(Race => { Navigation.PushModalAsync(new RaceResultsView(Race)); }); }
+        public ICommand ClearHistoryCommand { get => new Command(() => { App.Database.ClearHistory(); }); }
         #endregion
         #region INotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;

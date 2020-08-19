@@ -11,6 +11,9 @@
             <Converters:ConcatRunnersNamesConverter x:Key="ConcatRunnersNamesConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Export Excel" Command="{Binding ClearHistoryCommand}"  Priority="1" Order="Secondary"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView>
             <d:ListView ItemsSource="{Binding Races}" SelectionMode="None" HasUnevenRows="True">
