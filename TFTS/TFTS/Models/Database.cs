@@ -28,5 +28,10 @@ namespace TFTS.Models
             tmp.Wait();
             return tmp.Result;
         }
+
+        public void ClearHistory()
+        {
+            _database.Table<RaceModel>().DeleteAsync().Wait();
+        }
     }
 }
