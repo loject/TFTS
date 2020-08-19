@@ -144,7 +144,7 @@ namespace TFTS.ViewModels
                 }
             });
         }
-        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this)); }); }
+        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this.Race)); }); }
 
         #endregion
         #region misc
