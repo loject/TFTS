@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
 using TFTS.misc;
-
-using System.Runtime;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace TFTS.Models
@@ -23,6 +19,10 @@ namespace TFTS.Models
         [TextBlob("RunnersSerizlized ")]
         public SortableObservableCollection<RunnerModel> Runners { get; set; }
 
+        #region Properties
+        public float LapsCount { get => Distance / LapLength; }
+        #endregion
+        #region misc
         public string RunnersSerizlized {
             get
             {
@@ -47,5 +47,6 @@ namespace TFTS.Models
                 Runners = new SortableObservableCollection<RunnerModel>(list ?? new List<RunnerModel>());
             }
         }
+        #endregion
     }
 }
