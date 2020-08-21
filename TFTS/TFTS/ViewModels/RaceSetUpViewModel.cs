@@ -1,72 +1,39 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-using TFTS.misc;
 using TFTS.Models;
 using TFTS.Views;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
 {
-    public class SimpleRunner : INotifyPropertyChanged
+    [AddINotifyPropertyChangedInterface]
+    public class SimpleRunner
     {
-        private string _name;
-        private string _distance;
-        public string Name 
-        { 
-            get => _name; 
-            set
-            {
-                _name = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
+        public string Name { get; set; }
+        public string Distance { get; set; }
+    }
+    [AddINotifyPropertyChangedInterface]
+    public class RaceSetUpViewModel
+    {
+        private string _distance { get; set; } = "1500";
+        private string _lapLength { get; set; } = "200";
+        private INavigation Navigation;
+        public ObservableCollection<SimpleRunner> Runners { get; private set; }
+        public RaceViewModel Race { get; private set; }
         public string Distance
         {
             get => _distance;
             set
             {
+                foreach (SimpleRunner i in Runners) if (i.Distance == Distance) i.Distance = value;
                 _distance = value;
-                OnPropertyChanged(nameof(Distance));
             }
         }
-        #region INotifyPropertyChanged interface implement
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
-    }
-    public class RaceSetUpViewModel : INotifyPropertyChanged
-    {
-        private string _distance = "1500";
-        private string _lapLength = "200";
-
-        private INavigation Navigation;
-        public ObservableCollection<SimpleRunner> Runners { get; private set; }
-        public RaceViewModel Race { get; private set; }
-        public string Distance 
-        { 
-            get => _distance;  
-            set
-            {
-                foreach (var i in Runners) if (i.Distance == _distance) i.Distance = value;
-                _distance = value;
-                OnPropertyChanged(nameof(Distance));
-            }
-        }
-        public string LapLength
-        {
-            get => _lapLength;
-            set
-            {
-                _lapLength = value;
-                OnPropertyChanged(nameof(Distance));
-            }
-        }
+        public string LapLength { get => _lapLength; set => _lapLength = value; }
 
         public RaceSetUpViewModel(INavigation navigation, RaceViewModel race = null)
         {
@@ -79,7 +46,10 @@ namespace TFTS.ViewModels
             }
             else
             {
-                Race = new RaceViewModel(navigation);
+                Race = new RaceViewModel(navigation)
+                {
+                    Race = new RaceModel { Distance = 1500, LapLength = 200 },
+                };
                 Runners = new ObservableCollection<SimpleRunner>
                 {
                     new SimpleRunner{ Name = "Runner", Distance = Distance.ToString() },
@@ -88,6 +58,9 @@ namespace TFTS.ViewModels
                     new SimpleRunner{ Name = "Runner3", Distance = Distance.ToString() },
                 };
             }
+
+            Distance = Race.Distance.ToString();
+            LapLength = Race.LapLength.ToString();
 
             Navigation = navigation;
             Navigation.PushAsync(new RaceSetUpView(this));
@@ -190,13 +163,6 @@ namespace TFTS.ViewModels
             return ErrorStr;
         }
         public bool IndividualDistance { get => SettingsModel.IndividualDistance; }
-        #endregion
-        #region INotifyPropertyChanged interface implement
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
         #endregion
     }
 }

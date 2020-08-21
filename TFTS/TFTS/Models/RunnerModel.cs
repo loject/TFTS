@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using Xamarin.Essentials;
 
 namespace TFTS.Models
 {
+    [AddINotifyPropertyChangedInterface]
     public class RunnerModel : IComparable
     {
         public string Name { get; set; } = "Runner";

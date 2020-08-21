@@ -6,9 +6,11 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using SQLite;
+using PropertyChanged;
 
 namespace TFTS.Models
 {
+    [AddINotifyPropertyChangedInterface]
     public class RaceModel
     {
         [PrimaryKey, AutoIncrement]
