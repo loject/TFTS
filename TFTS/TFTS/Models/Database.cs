@@ -1,8 +1,5 @@
-﻿using Java.IO;
-using SQLite;
-using System;
+﻿using SQLite;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace TFTS.Models

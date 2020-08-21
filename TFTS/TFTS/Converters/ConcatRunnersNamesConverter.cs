@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +17,7 @@ namespace TFTS.Converters
             if (value == null) return "";
             try
             {
-                var list = value as SortableObservableCollection<RunnerModel>;
+                var list = value as List<RunnerModel>;
                 if (list.Count == 0) return "Без спортсменов?!";
                 return String.Join(", ", list.Select(r => r.Name));
             }
