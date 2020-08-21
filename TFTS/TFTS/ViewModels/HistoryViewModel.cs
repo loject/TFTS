@@ -32,6 +32,7 @@ namespace TFTS.ViewModels
             { 
                 var ClearHistoryTask = App.Database.ClearHistory();
                 ClearHistoryTask.Wait();
+                OnPropertyChanged(nameof(Races));
             }); 
         }
         #endregion
