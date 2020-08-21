@@ -1,5 +1,4 @@
-﻿using Android.Content.Res;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ using TFTS.Models;
 using TFTS.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace TFTS.ViewModels
 {
@@ -289,4 +287,5 @@ namespace TFTS.ViewModels
  * export overruned laps
  * Move to end finshed runners option in settings set isEnabled
  * Add posibiliti to save race after each lapDone
+ * add loging
  */
