@@ -1,5 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,13 +24,13 @@ namespace TFTS.ViewModels
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
         private Stopwatch timer_ = new Stopwatch();
 
-        /* TODO: move to ImplementPropertyChanged and DependsOn */
-        public float Distance { get => Race.Distance; set { Race.Distance = value; OnPropertyChanged(nameof(Distance)); OnPropertyChanged(nameof(LapsCount)); OnPropertyChanged(nameof(UnevenLaps)); } }
+        public float Distance { get => Race.Distance; set => Race.Distance = value; }
         public float LapsCount { get => Race.Distance / Race.LapLength; }
         public TimeSpan TotalTime { get => timer_.Elapsed; }
+        [DependsOn(nameof(TotalTime))]
         public string TotalTimeStr { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
-        public float LapLength { get => Race.LapLength; set { Race.LapLength= value; OnPropertyChanged(nameof(LapLength)); OnPropertyChanged(nameof(LapsCount)); OnPropertyChanged(nameof(UnevenLaps)); } }
+        public float LapLength { get => Race.LapLength; set => Race.LapLength = value; }
         public bool UnevenLaps { get => Race.Distance % Race.LapLength != 0; }
         public string StartTime { get => Race.StartTime.ToString(); }
 
@@ -68,7 +69,6 @@ namespace TFTS.ViewModels
                         Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
                         {
                             OnPropertyChanged(nameof(TotalTime));
-                            OnPropertyChanged(nameof(TotalTimeStr));
                             return timer_.IsRunning;
                         });
                     }
@@ -150,10 +150,8 @@ namespace TFTS.ViewModels
         {
             timer_.Reset();
             Race.Runners?.ForEach(r => r.Laps.Clear());
-            OnPropertyChanged(nameof(TotalTimeStr));
             OnPropertyChanged(nameof(TotalTime));
             OnPropertyChanged(nameof(IsRunning));
-            OnPropertyChanged(nameof(Race.Runners));
         }
         private string GetRaceResultCSV() /* TODO: delete this? */
         {

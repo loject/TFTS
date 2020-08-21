@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+﻿using PropertyChanged;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    [AddINotifyPropertyChangedInterface]
+    public class MainPageViewModel
     {
         public INavigation Navigation { get; private set; }
         public MainPageViewModel(INavigation navigation)
@@ -39,12 +40,5 @@ namespace TFTS.ViewModels
                 new SettingsViewModel(Navigation);
             });
         }
-        #region INotifyPropertyChanged interface implement
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
     }
 }
