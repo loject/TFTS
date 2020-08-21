@@ -27,7 +27,6 @@ namespace TFTS.ViewModels
         public float Distance { get => Race.Distance; set => Race.Distance = value; }
         public float LapsCount { get => Race.Distance / Race.LapLength; }
         public TimeSpan TotalTime { get => timer_.Elapsed; }
-        [DependsOn(nameof(TotalTime))]
         public string TotalTimeStr { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
         public bool IsRunning { get => timer_.IsRunning; }
         public float LapLength { get => Race.LapLength; set => Race.LapLength = value; }
@@ -69,6 +68,7 @@ namespace TFTS.ViewModels
                         Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
                         {
                             OnPropertyChanged(nameof(TotalTime));
+                            OnPropertyChanged(nameof(TotalTimeStr));
                             return timer_.IsRunning;
                         });
                     }
@@ -151,6 +151,7 @@ namespace TFTS.ViewModels
             timer_.Reset();
             Race.Runners?.ForEach(r => r.Laps.Clear());
             OnPropertyChanged(nameof(TotalTime));
+            OnPropertyChanged(nameof(TotalTimeStr));
             OnPropertyChanged(nameof(IsRunning));
         }
         private string GetRaceResultCSV() /* TODO: delete this? */
