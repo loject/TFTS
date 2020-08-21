@@ -41,7 +41,7 @@ namespace TFTS.Views
                 string positionOnFinish = "Н/Ф";
                 if (race.Runners[i - 1].IsFinished)
                 {
-                    positionOnFinish = race.Runners[i - 1].Laps[CeilLapsCount - 1].Position.ToString();
+                    positionOnFinish = race.Runners[i - 1].Laps[^1].Position.ToString();
                 }
                 grid.Children.Add(GetLabelWithText(race.Runners[i - 1].Name + "(" + positionOnFinish + ")"), 0, i);
                 for (int j = 1; j <= CeilLapsCount; ++j)
