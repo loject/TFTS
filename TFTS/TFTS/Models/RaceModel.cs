@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using TFTS.misc;
 using Newtonsoft.Json;
+using SQLite;
 
 namespace TFTS.Models
 {
-    [Serializable]
     public class RaceModel
     {
+        [PrimaryKey, AutoIncrement]
+        public int ID { get; set; }
         //public string Name { get; set; } /* TODO */
         public DateTime StartTime { get; set; } = DateTime.Now;
         public float Distance { get; set; }
