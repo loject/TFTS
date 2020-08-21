@@ -269,7 +269,7 @@ namespace TFTS.ViewModels
         }
         private void SaveRaceToDB()
         {
-            App.Database.SaveRaceToRaceHistory(Race);
+            App.Database.SaveRaceToRaceHistory(Race).Wait();
         }
         #endregion
         #region INotifyPropertyChanged interface implement

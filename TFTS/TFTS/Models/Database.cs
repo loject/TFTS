@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using Java.IO;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,23 +17,8 @@ namespace TFTS.Models
             _database.CreateTableAsync<RaceModel>().Wait();
         }
 
-        public List<RaceModel> GetRaceHistory()
-        {
-            var tmp = _database.Table<RaceModel>().ToListAsync();
-            tmp.Wait();
-            return tmp.Result;
-        }
-
-        public int SaveRaceToRaceHistory(RaceModel data)
-        {
-            var tmp = _database.InsertAsync(data);
-            tmp.Wait();
-            return tmp.Result;
-        }
-
-        public void ClearHistory()
-        {
-            _database.Table<RaceModel>().DeleteAsync().Wait();
-        }
+        public Task<List<RaceModel>> GetRaceHistory() => _database.Table<RaceModel>().ToListAsync();
+        public Task<int> SaveRaceToRaceHistory(RaceModel data) => _database.InsertAsync(data);
+        public Task<int> ClearHistory() => _database.Table<RaceModel>().DeleteAsync( r => true );
     }
 }
