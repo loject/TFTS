@@ -16,7 +16,9 @@ namespace TFTS.ViewModels
             {
                 var GetRaceHistoryTask = App.Database.GetRaceHistory();
                 GetRaceHistoryTask.Wait();
-                return GetRaceHistoryTask.Result;
+                var resList = GetRaceHistoryTask.Result;
+                resList.Reverse();
+                return resList;
             }
         } 
         public HistoryViewModel(INavigation navigation = null)
