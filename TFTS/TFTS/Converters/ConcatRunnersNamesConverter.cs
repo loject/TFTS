@@ -1,28 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using TFTS.misc;
 using TFTS.Models;
+using TFTS.ViewModels;
 using Xamarin.Forms;
 
 namespace TFTS.Converters
 {
-    class RunnerPositionToColorConverter : IValueConverter
+    class ConcatRunnersNamesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!SettingsModel.HighlightFinishers) return Color.Default;
-            if (value == null) return Color.Default;
+            if (value == null) return "";
             try
             {
-                float RunnerPosition = (float)value;
-                if (RunnerPosition <= 0) return Color.Red;
-                if (RunnerPosition <= 1) return Color.Yellow;
-                return Color.Default;
+                var list = value as List<RunnerModel>;
+                if (list.Count == 0) return "Без спортсменов?!";
+                return String.Join(", ", list.Select(r => r.Name));
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error - " + e.Message);
             }
-            return Color.Default;
+            return "Error";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

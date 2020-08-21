@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using TFTS.View;
-using TFTS.ViewModel;
+﻿using System.ComponentModel;
+using TFTS.ViewModels;
 using Xamarin.Forms;
 
 namespace TFTS
@@ -19,21 +12,7 @@ namespace TFTS
         public MainPage()
         {
             InitializeComponent();
-        }
-
-        private void BtnTempo_Clicked(object sender, EventArgs e)
-        {
-            new RaceSetUpViewModel(Navigation);
-        }
-
-        private async void BtnWork_ClickedAsync(object sender, EventArgs e)
-        {
-            await DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
-        }
-
-        private void BtnSettings_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new SettingView());
+            BindingContext = new MainPageViewModel(Navigation);
         }
     }
 }

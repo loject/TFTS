@@ -1,33 +1,128 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using TFTS.Model;
+using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
-    class SettingsViewModel : INotifyPropertyChanged
+    public class SettingsViewModel : INotifyPropertyChanged
     {
+        public INavigation Navigation { get; private set; }
         const int MaxVibrationLength = 10000;
         const int MinVibrationLength = 0;
+
+        public SettingsViewModel(INavigation navigation)
+        {
+            Navigation = navigation;
+            Navigation.PushAsync(new SettingView(this));
+        }
+
+        #region properties
         public bool LapDoneBySwipe
         {
-            get => Preferences.Get(nameof(LapDoneBySwipe), false);
+            get => SettingsModel.LapDoneBySwipe;
             set
             {
-                Preferences.Set(nameof(LapDoneBySwipe), value);
+                SettingsModel.LapDoneBySwipe = value;
                 OnPropertyChanged(nameof(LapDoneBySwipe));
             }
         }
         public bool FirstLapAlwaysFull
         {
-            get => Preferences.Get(nameof(FirstLapAlwaysFull), true);
+            get => SettingsModel.FirstLapAlwaysFull;
             set
             {
-                Preferences.Set(nameof(FirstLapAlwaysFull), value);
+                SettingsModel.FirstLapAlwaysFull = value;
                 OnPropertyChanged(nameof(FirstLapAlwaysFull));
             }
         }
+        public string SortBest
+        {
+            get => SettingsModel.SortBest.ToString();
+            set
+            {
+                try
+                {
+                    string SortTypeStr = Preferences.Get(nameof(SortBest), RunnersSortingType.DontSort.ToString());
+                    RunnersSortingType SortType = (RunnersSortingType)Enum.Parse(typeof(RunnersSortingType), SortTypeStr);
+                    SettingsModel.SortBest = SortType;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error - " + e.Message);
+                }
+                OnPropertyChanged(nameof(SortBest));
+                OnPropertyChanged(nameof(MoveFinishedToEndIsEnabled));
+            }
+        }
+        public bool MoveFinishedToEnd
+        {
+            get => SettingsModel.MoveFinishedToEnd;
+            set
+            {
+                SettingsModel.MoveFinishedToEnd = value;
+                OnPropertyChanged(nameof(MoveFinishedToEnd));
+            }
+        }
+        public bool LeftHandMode
+        {
+            get => SettingsModel.LeftHandMode;
+            set
+            {
+                SettingsModel.LeftHandMode = value;
+                OnPropertyChanged(nameof(LeftHandMode));
+            }
+        }
+        public bool VibrationOnLapDone
+        {
+            get => SettingsModel.VibrationOnLapDone;
+            set
+            {
+                SettingsModel.VibrationOnLapDone = value;
+                OnPropertyChanged(nameof(VibrationOnLapDone));
+            }
+        }
+        public int VibrationOnLapDoneLength
+        {
+            get => SettingsModel.VibrationOnLapDoneLength;
+            set
+            {
+                try
+                {
+                    int val = Math.Clamp(value, MinVibrationLength, MaxVibrationLength);
+                    SettingsModel.VibrationOnLapDoneLength = val;
+                    OnPropertyChanged(nameof(VibrationOnLapDoneLength));
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine("Error - " + e.Message);
+                }
+            }
+        }
+        public bool HighlightFinishers
+        {
+            get => SettingsModel.HighlightFinishers;
+            set
+            {
+                SettingsModel.HighlightFinishers = value;
+                OnPropertyChanged(nameof(HighlightFinishers));
+            }
+        }
+        public bool IndividualDistance
+        {
+            get => SettingsModel.IndividualDistance;
+            set
+            {
+                SettingsModel.IndividualDistance = value;
+                OnPropertyChanged(nameof(IndividualDistance));
+            }
+        }
+        #endregion
+        #region misc
+        public bool MoveFinishedToEndIsEnabled { get => SortBest != RunnersSortingType.DontSort.ToString(); }
         public List<string> SortBestPosibleValues
         {
             get
@@ -38,98 +133,6 @@ namespace TFTS.ViewModel
                 return res;
             }
         }
-        public string SortBest
-        {
-            get
-            {
-                string res = "error";
-                try
-                {
-                    res = Preferences.Get(nameof(SortBest), RunnersSortingType.DontSort.ToString());
-                }
-                catch (Exception e)
-                {
-                    System.Console.WriteLine("Error - " + e.Message);
-                }
-                return res;
-            }
-            set
-            {
-                Preferences.Set(nameof(SortBest), value.ToString());
-                OnPropertyChanged(nameof(SortBest));
-                OnPropertyChanged(nameof(MoveFinishedToEndIsEnabled));
-            }
-        }
-        public bool MoveFinishedToEnd
-        {
-            get => Preferences.Get(nameof(MoveFinishedToEnd), true);
-            set
-            {
-                Preferences.Set(nameof(MoveFinishedToEnd), value);
-                OnPropertyChanged(nameof(MoveFinishedToEnd));
-            }
-        }
-        public bool LeftHandMode
-        {
-            get => Preferences.Get(nameof(LeftHandMode), false);
-            set
-            {
-                Preferences.Set(nameof(LeftHandMode), value);
-                OnPropertyChanged(nameof(LeftHandMode));
-            }
-        }
-        public bool VibrationOnLapDone
-        {
-            get => Preferences.Get(nameof(VibrationOnLapDone), true);
-            set
-            {
-                Preferences.Set(nameof(VibrationOnLapDone), value);
-                OnPropertyChanged(nameof(VibrationOnLapDone));
-            }
-        }
-        public int VibrationOnLapDoneLength
-        {
-            get => Preferences.Get(nameof(VibrationOnLapDoneLength), 150);
-            set
-            {
-                try
-                {
-                    int val = value;
-                    if (val > MaxVibrationLength) val = MaxVibrationLength;
-                    if (val < MinVibrationLength) val = MinVibrationLength;
-                    Preferences.Set(nameof(VibrationOnLapDoneLength), val);
-                    OnPropertyChanged(nameof(VibrationOnLapDoneLength));
-                }
-                catch (Exception e)
-                {
-                    System.Console.WriteLine("Error - " + e.Message);
-                }
-                catch
-                {
-                    System.Console.WriteLine("Error");
-                }
-            }
-        }
-        public bool HighlightFinishers
-        {
-            get => Preferences.Get(nameof(HighlightFinishers), true);
-            set
-            {
-                Preferences.Set(nameof(HighlightFinishers), value);
-                OnPropertyChanged(nameof(HighlightFinishers));
-            }
-        }
-        public bool IndividualDistance
-        {
-            get => Preferences.Get(nameof(IndividualDistance), false);
-            set
-            {
-                Preferences.Set(nameof(IndividualDistance), value);
-                OnPropertyChanged(nameof(IndividualDistance));
-            }
-        }
-        #region misc
-        public bool MoveFinishedToEndIsEnabled { get => SortBest != RunnersSortingType.DontSort.ToString(); }
         #endregion
         #region InotifyPropertyChanged interface implement
         public event PropertyChangedEventHandler PropertyChanged;

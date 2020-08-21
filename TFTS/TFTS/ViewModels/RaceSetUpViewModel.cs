@@ -1,16 +1,14 @@
-﻿using Android.Content;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using TFTS.misc;
-using TFTS.Model;
+using TFTS.Models;
+using TFTS.Views;
 using Xamarin.Forms;
 
-namespace TFTS.ViewModel
+namespace TFTS.ViewModels
 {
     public class SimpleRunner : INotifyPropertyChanged
     {
@@ -76,8 +74,8 @@ namespace TFTS.ViewModel
             {
                 Race = race;
                 Runners = new ObservableCollection<SimpleRunner>();
-                foreach (var runner in race.Runners)
-                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.Runner.TotalDistance.ToString() });
+                foreach (var runner in race.Race.Runners)
+                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.TotalDistance.ToString() });
             }
             else
             {
@@ -92,7 +90,7 @@ namespace TFTS.ViewModel
             }
 
             Navigation = navigation;
-            Navigation.PushAsync(new View.RaceSetUpView(this));
+            Navigation.PushAsync(new RaceSetUpView(this));
         }
         #region Commands
         public ICommand AddNewRunnerCommand
@@ -111,9 +109,7 @@ namespace TFTS.ViewModel
                         Race.Reset();
                         Race.Distance = float.Parse(Distance);
                         Race.LapLength = float.Parse(LapLength);
-                        Race.Runners = new SortableObservableCollection<RunnerViewModel>(
-                            Runners.Select(runner => new RunnerViewModel(new RunnerModel(runner.Name, float.Parse(runner.Distance), Race))
-                            ).ToList());
+                        Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
                         Race.OnPropertyChanged(nameof(Runners));
                         await Navigation.PopAsync(true);
                     }

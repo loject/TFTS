@@ -2,10 +2,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:TFTS.View"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:local="clr-namespace:TFTS.Views"
              mc:Ignorable="d"
              Title="Промежуточные результаты"
-             x:Class="TFTS.View.RaceResultsView">
+             x:Class="TFTS.Views.RaceResultsView">
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:DateTimeToStrCoverter x:Key="DateTimeToStrCoverter"/>

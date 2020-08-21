@@ -8,9 +8,10 @@
 
     <StackLayout>
         <StackLayout VerticalOptions="CenterAndExpand">
-            <Button Text="Забег" Clicked="BtnTempo_Clicked"/>
-            <Button Text="Табата" Clicked="BtnWork_ClickedAsync"/>
-            <Button Text="Настройки" Clicked="BtnSettings_Clicked"/>
+            <Button Text="Забег" Command="{Binding GoToRaceCommand}"/>
+            <Button Text="Табата" Command="{Binding GoToTobataCommand}"/>
+            <Button Text="История" Command="{Binding GoToHistoryCommand}"/>
+            <Button Text="Настройки" Command="{Binding GoToSettingsCommand}"/>
         </StackLayout>
     </StackLayout>
 
