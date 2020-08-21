@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Export Excel" Command="{Binding ClearHistoryCommand}"  Priority="1" Order="Secondary"/>
+        <ToolbarItem Text="Clear history" Command="{Binding ClearHistoryCommand}"  Priority="1" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView>
