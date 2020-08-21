@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using TFTS.misc;
 using Newtonsoft.Json;
 using SQLite;
 
@@ -19,13 +18,14 @@ namespace TFTS.Models
         public float Distance { get; set; }
         public float LapLength { get; set; }
         [TextBlob("RunnersSerizlized ")]
-        public SortableObservableCollection<RunnerModel> Runners { get; set; }
+        public List<RunnerModel> Runners { get; set; }
 
         #region Properties
         public float LapsCount { get => Distance / LapLength; }
         #endregion
         #region misc
-        public string RunnersSerizlized {
+        public string RunnersSerizlized 
+        {
             get
             {
                 try
@@ -45,8 +45,7 @@ namespace TFTS.Models
             {
                 StringReader sr = new StringReader(value);
                 var tmp = JsonSerializer.Create();
-                List<RunnerModel> list = (List<RunnerModel>)tmp.Deserialize(sr, typeof(List<RunnerModel>));
-                Runners = new SortableObservableCollection<RunnerModel>(list ?? new List<RunnerModel>());
+                Runners = (List<RunnerModel>)tmp.Deserialize(sr, typeof(List<RunnerModel>));
             }
         }
         #endregion

@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
-using TFTS.ViewModels;
 using Xamarin.Essentials;
 
 namespace TFTS.Models
@@ -10,8 +9,8 @@ namespace TFTS.Models
     public class RunnerModel : IComparable
     {
         public string Name { get; set; } = "Runner";
-        public ObservableCollection<float> CheckPoints { get; private set; } = new ObservableCollection<float>();
-        public ObservableCollection<Lap> Laps { get; private set; } = new ObservableCollection<Lap>();
+        public List<float> CheckPoints { get; set; } = new List<float>();
+        public List<Lap> Laps { get; set; } = new List<Lap>();
         [JsonIgnore]
         public RaceModel Race { get; private set; }
 
@@ -38,11 +37,17 @@ namespace TFTS.Models
         }
 
         #region Properties
+        [JsonIgnore]
         public TimeSpan TotalTime { get => TimeSpan.FromTicks(Laps.Sum(lap => lap.Time.Ticks)); }
+        [JsonIgnore]
         public float TotalDistance { get => CheckPoints.Sum(); }
+        [JsonIgnore]
         public float DistanceOvercome { get => Laps.Sum(lap => lap.Length); }
+        [JsonIgnore]
         public float LapsOvercome { get => DistanceOvercome / Race.LapLength; }
+        [JsonIgnore]
         public float LapsGoal { get => TotalDistance / Race.LapLength; }
+        [JsonIgnore]
         public bool IsFinished { get => LapsOvercome >= LapsGoal; }
         #endregion
         #region functions

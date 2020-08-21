@@ -109,9 +109,7 @@ namespace TFTS.ViewModels
                         Race.Reset();
                         Race.Distance = float.Parse(Distance);
                         Race.LapLength = float.Parse(LapLength);
-                        Race.Race.Runners = new SortableObservableCollection<RunnerModel>(
-                            Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)
-                            ).ToList());
+                        Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
                         Race.OnPropertyChanged(nameof(Runners));
                         await Navigation.PopAsync(true);
                     }
