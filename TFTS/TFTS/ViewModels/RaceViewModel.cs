@@ -127,7 +127,7 @@ namespace TFTS.ViewModels
             {
                 try
                 {
-                    var fn = "TFTS_" + DateTime.Now.ToString() + ".xlsx";
+                    var fn = "TFTS_" + Name + ".xlsx";
                     var file = Path.Combine(FileSystem.CacheDirectory, fn);
                     var xlsx = GetRaceResultXLSX();
                     xlsx.Write(File.Create(file));
