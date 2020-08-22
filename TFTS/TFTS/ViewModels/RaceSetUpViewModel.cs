@@ -24,6 +24,7 @@ namespace TFTS.ViewModels
         private INavigation Navigation;
         public ObservableCollection<SimpleRunner> Runners { get; private set; }
         public RaceViewModel Race { get; private set; }
+        public string Name { get => Race.Race.Name; set => Race.Race.Name = value; }
         public string Distance
         {
             get => _distance;
@@ -52,10 +53,8 @@ namespace TFTS.ViewModels
                 };
                 Runners = new ObservableCollection<SimpleRunner>
                 {
-                    new SimpleRunner{ Name = "Runner", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner1", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner2", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner3", Distance = Distance.ToString() },
+                    new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
+                    new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
                 };
             }
 
@@ -68,7 +67,7 @@ namespace TFTS.ViewModels
         #region Commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new SimpleRunner { Name = "Runner" + Runners.Count.ToString(), Distance = Distance.ToString() }));
+            get => new Command(() => Runners.Add(new SimpleRunner { Name = Runners.Count.ToString(), Distance = Distance.ToString() }));
         }
         public ICommand RaceEditingDoneCommand
         {
@@ -82,8 +81,9 @@ namespace TFTS.ViewModels
                         Race.Reset();
                         Race.Distance = float.Parse(Distance);
                         Race.LapLength = float.Parse(LapLength);
+                        if (string.IsNullOrEmpty(Name)) Name = DateTime.Now.ToString();
                         Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
-                        Race.OnPropertyChanged(nameof(Runners));
+                        Race.OnPropertyChanged(nameof(Runners));/* TODO: fix this */
                         await Navigation.PopAsync(true);
                     }
                     else

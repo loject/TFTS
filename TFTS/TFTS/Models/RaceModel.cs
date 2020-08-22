@@ -15,12 +15,12 @@ namespace TFTS.Models
     {
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
-        //public string Name { get; set; } /* TODO */
+        public string Name { get; set; } = DateTime.Now.ToString();
         public DateTime StartTime { get; set; } = DateTime.Now;
         public float Distance { get; set; }
         public float LapLength { get; set; }
         [TextBlob("RunnersSerizlized ")]
-        public List<RunnerModel> Runners { get; set; }
+        public List<RunnerModel> Runners { get; set; }/* TODO: fix set */
 
         #region Properties
         public float LapsCount { get => Distance / LapLength; }

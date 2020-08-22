@@ -24,6 +24,7 @@ namespace TFTS.ViewModels
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
         private Stopwatch timer_ = new Stopwatch();
 
+        public string Name { get => Race.Name; set => Race.Name = value; }
         public float Distance { get => Race.Distance; set => Race.Distance = value; }
         public float LapsCount { get => Race.Distance / Race.LapLength; }
         public TimeSpan TotalTime { get => timer_.Elapsed; }
