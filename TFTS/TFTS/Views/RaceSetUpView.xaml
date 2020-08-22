@@ -15,15 +15,18 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Text="Дистанция:" VerticalTextAlignment="Center"/>
-                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" Keyboard="Numeric" />
-                    <Label Grid.Row="1" Grid.Column="0" Text="Длинна круга:"  VerticalTextAlignment="Center"/>
-                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapLength}" Keyboard="Numeric" />
+                    <Label Grid.Row="0" Grid.Column="0" Text="Забег:" VerticalTextAlignment="Center"/>
+                    <Entry Grid.Row="0" Grid.Column="1" Placeholder="Имя забега" Text="{Binding Name}" Keyboard="Plain" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="Дистанция:" VerticalTextAlignment="Center"/>
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Дистанция" Text="{Binding Distance}" Keyboard="Numeric" />
+                    <Label Grid.Row="2" Grid.Column="0" Text="Длинна круга:"  VerticalTextAlignment="Center"/>
+                    <Entry Grid.Row="2" Grid.Column="1" Placeholder="Длина круга" Text="{Binding LapLength}" Keyboard="Numeric" />
 
                 </Grid>
             </StackLayout>
