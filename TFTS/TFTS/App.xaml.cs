@@ -9,6 +9,7 @@ namespace TFTS
     public partial class App : Application
     {
         static HistoryDatabase historyDatabase;
+        static PlanDatabase planDatabase;
 
         public static HistoryDatabase HistoryDatabase
         {
@@ -19,6 +20,17 @@ namespace TFTS
                     historyDatabase = new HistoryDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TFTS_RaceHistory.db3"));
                 }
                 return historyDatabase;
+            }
+        }
+        public static PlanDatabase PlanDatabase
+        {
+            get
+            {
+                if (planDatabase == null)
+                {
+                    planDatabase = new PlanDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TFTS_RacePlan.db3"));
+                }
+                return planDatabase;
             }
         }
         public App()
