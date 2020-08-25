@@ -21,7 +21,7 @@ namespace TFTS.ViewModels
     {
         private string _distance { get; set; } = "1500";
         private string _lapLength { get; set; } = "200";
-        private INavigation Navigation;
+
         public ObservableCollection<SimpleRunner> Runners { get; private set; }
         public RaceViewModel Race { get; private set; }
         public string Name { get => Race.Race.Name; set => Race.Race.Name = value; }
@@ -36,7 +36,7 @@ namespace TFTS.ViewModels
         }
         public string LapLength { get => _lapLength; set => _lapLength = value; }
 
-        public RaceSetUpViewModel(INavigation navigation, RaceViewModel race = null)
+        public RaceSetUpViewModel(RaceViewModel race = null)
         {
             if (race != null)
             {
@@ -47,7 +47,7 @@ namespace TFTS.ViewModels
             }
             else
             {
-                Race = new RaceViewModel(navigation)
+                Race = new RaceViewModel()
                 {
                     Race = new RaceModel { Distance = 1500, LapLength = 200 },
                 };
@@ -60,9 +60,6 @@ namespace TFTS.ViewModels
 
             Distance = Race.Distance.ToString();
             LapLength = Race.LapLength.ToString();
-
-            Navigation = navigation;
-            Navigation.PushAsync(new RaceSetUpView(this));
         }
         #region Commands
         public ICommand AddNewRunnerCommand
@@ -84,17 +81,17 @@ namespace TFTS.ViewModels
                         if (string.IsNullOrEmpty(Name)) Name = DateTime.Now.ToString();
                         Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
                         Race.OnPropertyChanged(nameof(Runners));/* TODO: fix this */
-                        await Navigation.PopAsync(true);
+                        await Application.Current.MainPage.Navigation.PopAsync(true);
                     }
                     else
                     {
-                        await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
+                        await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
                     }
                 }
                 catch (Exception e)
                 {
                     /* TODO: log the error */
-                    await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
+                    await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
                     Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
                 }
                 catch

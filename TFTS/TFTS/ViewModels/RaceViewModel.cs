@@ -18,7 +18,6 @@ namespace TFTS.ViewModels
 {
     public class RaceViewModel : INotifyPropertyChanged
     {
-        public INavigation Navigation { get; private set; }
         //public NavigationPage Page { get; private set; }
         public RaceModel Race { get; set; }
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
@@ -37,18 +36,17 @@ namespace TFTS.ViewModels
         #region constructors
         public RaceViewModel(INavigation navigation = null, RaceModel race = null)
         {
-            Race = race ?? new RaceModel();
-            Navigation = navigation;
-            Navigation?.PushAsync(new RaceView(this));
-            var Page = Navigation.NavigationStack[^1];
-            /* add exit listener for save race to db*/
-            (Application.Current.MainPage as NavigationPage).Popped += (object sender, NavigationEventArgs args) =>
-            {
-                if (args.Page == Page)
-                {
-                    SaveRaceToDB();
-                }
-            };
+            //Race = race ?? new RaceModel();
+            //Application.Current.MainPage.Navigation?.PushAsync(new RaceView(this));
+            ///* add exit listener for save race to db*/
+            //var Page = Application.Current.MainPage.Navigation.NavigationStack[^1];
+            //(Application.Current.MainPage as NavigationPage).Popped += (object sender, NavigationEventArgs args) =>
+            //{
+            //    if (args.Page == Page)
+            //    {
+            //        SaveRaceToDB();
+            //    }
+            //};
         }
         #endregion
         #region RaceViewCommands
@@ -79,10 +77,6 @@ namespace TFTS.ViewModels
                 {
                     Console.WriteLine("Error - " + e.Message);
                 }
-                catch
-                {
-
-                }
             });
         }
         public ICommand ResetCommand
@@ -91,7 +85,7 @@ namespace TFTS.ViewModels
             {
                 try
                 {
-                    bool choiceIsStop = await Navigation.NavigationStack[^1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
+                    bool choiceIsStop = await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
                     if (choiceIsStop == true)
                     {
                         Reset();
@@ -135,7 +129,7 @@ namespace TFTS.ViewModels
                 }
                 catch (Exception e)
                 {
-                    Navigation.NavigationStack[^1].DisplayAlert("Error", e.Message, "OK");
+                    Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Error", e.Message, "OK");
                 }
                 catch
                 {
@@ -143,7 +137,7 @@ namespace TFTS.ViewModels
                 }
             });
         }
-        public ICommand ShowResultPageCommand { get => new Command(() => { Navigation.PushModalAsync(new RaceResultsView(this.Race)); }); }
+        public ICommand ShowResultPageCommand { get => new Command(() => { Application.Current.MainPage.Navigation.PushModalAsync(new RaceResultsView(this.Race)); }); }
 
         #endregion
         #region misc

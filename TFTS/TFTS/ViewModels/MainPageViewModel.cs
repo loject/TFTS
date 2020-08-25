@@ -1,5 +1,6 @@
 ﻿using PropertyChanged;
 using System.Windows.Input;
+using TFTS.Views;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
@@ -13,7 +14,10 @@ namespace TFTS.ViewModels
         {
             get => new Command(() =>
             {
-                new RaceSetUpViewModel(Application.Current.MainPage.Navigation);
+                var RaceSetUpVM = new RaceSetUpViewModel();
+                var RaceSetUpPage = new RaceSetUpView();
+                RaceSetUpPage.BindingContext = RaceSetUpVM;
+                Application.Current.MainPage.Navigation.PushAsync(RaceSetUpPage);
             });
         }
         public ICommand GoToTobataCommand
