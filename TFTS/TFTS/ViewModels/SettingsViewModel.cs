@@ -11,15 +11,11 @@ namespace TFTS.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class SettingsViewModel
     {
-        public INavigation Navigation { get; private set; }
         const int MaxVibrationLength = 10000;
         const int MinVibrationLength = 0;
 
-        public SettingsViewModel(INavigation navigation)
-        {
-            Navigation = navigation;
-            Navigation.PushAsync(new SettingView(this));
-        }
+        public SettingsViewModel()
+        { }
 
         #region properties
         public bool LapDoneBySwipe
@@ -39,8 +35,7 @@ namespace TFTS.ViewModels
             {
                 try
                 {
-                    string SortTypeStr = Preferences.Get(nameof(SortBest), RunnersSortingType.DontSort.ToString());
-                    RunnersSortingType SortType = (RunnersSortingType)Enum.Parse(typeof(RunnersSortingType), SortTypeStr);
+                    RunnersSortingType SortType = (RunnersSortingType)Enum.Parse(typeof(RunnersSortingType), value);
                     SettingsModel.SortBest = SortType;
                 }
                 catch (Exception e)

@@ -41,7 +41,10 @@ namespace TFTS.ViewModels
         {
             get => new Command(() =>
             {
-                new SettingsViewModel(Application.Current.MainPage.Navigation);
+                var SettingsVM = new SettingsViewModel();
+                var SettingsPage = new SettingView();
+                SettingsPage.BindingContext = SettingsVM;
+                Application.Current.MainPage.Navigation.PushAsync(SettingsPage);
             });
         }
     }
