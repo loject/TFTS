@@ -44,7 +44,7 @@ namespace TFTS.ViewModels
         {
             get => new Command<RunnerViewModel>((RunnerViewModel runner) => 
             { 
-                Race.Navigation.PushModalAsync(new RunnerResultView(runner, Race.StartTime.ToString(), Runner.TotalDistance.ToString())); 
+                //Race.Navigation.PushModalAsync(new RunnerResultView(runner, Race.StartTime.ToString(), Runner.TotalDistance.ToString())); 
             });
         }
         public ICommand DeleteLapCommand

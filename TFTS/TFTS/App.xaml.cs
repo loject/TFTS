@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using TFTS.Models;
+using TFTS.ViewModels;
 using Xamarin.Forms;
 
 namespace TFTS
@@ -24,7 +25,11 @@ namespace TFTS
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            var MainPageVM = new MainPageViewModel();
+            var MainPagePage = new MainPage();
+            MainPagePage.BindingContext = MainPageVM;
+
+            MainPage = new NavigationPage(MainPagePage);
         }
 
         protected override void OnStart()
