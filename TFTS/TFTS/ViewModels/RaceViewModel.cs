@@ -18,7 +18,6 @@ namespace TFTS.ViewModels
 {
     public class RaceViewModel : INotifyPropertyChanged
     {
-        //public NavigationPage Page { get; private set; }
         public RaceModel Race { get; set; }
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
         private Stopwatch timer_ = new Stopwatch();
@@ -34,22 +33,12 @@ namespace TFTS.ViewModels
         public string StartTime { get => Race.StartTime.ToString(); }
 
         #region constructors
-        public RaceViewModel(INavigation navigation = null, RaceModel race = null)
+        public RaceViewModel(RaceModel race = null)
         {
-            //Race = race ?? new RaceModel();
-            //Application.Current.MainPage.Navigation?.PushAsync(new RaceView(this));
-            ///* add exit listener for save race to db*/
-            //var Page = Application.Current.MainPage.Navigation.NavigationStack[^1];
-            //(Application.Current.MainPage as NavigationPage).Popped += (object sender, NavigationEventArgs args) =>
-            //{
-            //    if (args.Page == Page)
-            //    {
-            //        SaveRaceToDB();
-            //    }
-            //};
+            Race = race ?? new RaceModel();
         }
         #endregion
-        #region RaceViewCommands
+        #region Commands
         public ICommand StartStopCommand
         {
             get => new Command(() =>
@@ -138,7 +127,10 @@ namespace TFTS.ViewModels
             });
         }
         public ICommand ShowResultPageCommand { get => new Command(() => { Application.Current.MainPage.Navigation.PushModalAsync(new RaceResultsView(this.Race)); }); }
-
+        public ICommand SaveRaceToDB { get => new Command(() =>
+        {
+            App.Database.SaveRaceToRaceHistory(Race).Wait();
+        }); }
         #endregion
         #region misc
         public void Reset()
@@ -258,10 +250,6 @@ namespace TFTS.ViewModels
             }
 
             return workbook;
-        }
-        private void SaveRaceToDB()
-        {
-            App.Database.SaveRaceToRaceHistory(Race).Wait();
         }
         #endregion
         #region INotifyPropertyChanged interface implement

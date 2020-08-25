@@ -19,12 +19,13 @@ namespace TFTS.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class RaceSetUpViewModel
     {
+        private string _raceName { get; set; } = DateTime.Now.ToString();
         private string _distance { get; set; } = "1500";
         private string _lapLength { get; set; } = "200";
 
         public ObservableCollection<SimpleRunner> Runners { get; private set; }
-        public RaceViewModel Race { get; private set; }
-        public string Name { get => Race.Race.Name; set => Race.Race.Name = value; }
+        //public RaceViewModel Race { get; private set; }
+        public string Name { get => _raceName; set => _raceName = value; }
         public string Distance
         {
             get => _distance;
@@ -36,30 +37,14 @@ namespace TFTS.ViewModels
         }
         public string LapLength { get => _lapLength; set => _lapLength = value; }
 
-        public RaceSetUpViewModel(RaceViewModel race = null)
+        public RaceSetUpViewModel(/*RaceViewModel race = null*/)
         {
-            if (race != null)
+            /* TODO: adaptive to race edition */
+            Runners = new ObservableCollection<SimpleRunner>
             {
-                Race = race;
-                Runners = new ObservableCollection<SimpleRunner>();
-                foreach (var runner in race.Race.Runners)
-                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.TotalDistance.ToString() });
-            }
-            else
-            {
-                Race = new RaceViewModel()
-                {
-                    Race = new RaceModel { Distance = 1500, LapLength = 200 },
-                };
-                Runners = new ObservableCollection<SimpleRunner>
-                {
-                    new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
-                };
-            }
-
-            Distance = Race.Distance.ToString();
-            LapLength = Race.LapLength.ToString();
+                new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
+                new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
+            };
         }
         #region Commands
         public ICommand AddNewRunnerCommand
@@ -75,13 +60,12 @@ namespace TFTS.ViewModels
                     string ErrorStr = Validate();
                     if (string.IsNullOrEmpty(ErrorStr))
                     {
-                        Race.Reset();
-                        Race.Distance = float.Parse(Distance);
-                        Race.LapLength = float.Parse(LapLength);
-                        if (string.IsNullOrEmpty(Name)) Name = DateTime.Now.ToString();
-                        Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
-                        Race.OnPropertyChanged(nameof(Runners));/* TODO: fix this */
-                        await Application.Current.MainPage.Navigation.PopAsync(true);
+                        /* TODO: optional open race view */
+                        var RaceVM = GetRaceViewModel();
+                        var RacePage = new RaceView();
+                        RacePage.BindingContext = RaceVM;
+                        await Application.Current.MainPage.Navigation.PushAsync(RacePage);
+                        Application.Current.MainPage.Navigation.RemovePage(Application.Current.MainPage.Navigation.NavigationStack[^2]);
                     }
                     else
                     {
@@ -100,6 +84,23 @@ namespace TFTS.ViewModels
                     Console.WriteLine("Error while executing - GoToRacePageCommand");
                 };
             });
+        }
+        #endregion
+        #region Functions
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        private RaceViewModel GetRaceViewModel(RaceViewModel raceViewModel = null)
+        {
+            RaceViewModel raceVM = raceViewModel ?? new RaceViewModel(new RaceModel
+            {
+                Name = Name,
+                Distance = float.Parse(Distance),
+                LapLength = float.Parse(LapLength),
+            });
+            if (string.IsNullOrEmpty(Name)) raceVM.Name = DateTime.Now.ToString();
+            raceVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), raceVM.Race)).ToList();
+            return raceVM;
         }
         #endregion
         #region misc
