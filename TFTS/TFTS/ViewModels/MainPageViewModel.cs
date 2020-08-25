@@ -31,7 +31,10 @@ namespace TFTS.ViewModels
         {
             get => new Command(() =>
             {
-                new HistoryViewModel(Application.Current.MainPage.Navigation);
+                var HistoryVM = new HistoryViewModel();
+                var HistoryPage = new HistoryPageView();
+                HistoryPage.BindingContext = HistoryVM;
+                Application.Current.MainPage.Navigation.PushAsync(HistoryPage);
             });
         }
         public ICommand GoToSettingsCommand
