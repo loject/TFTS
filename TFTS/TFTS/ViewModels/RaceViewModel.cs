@@ -34,7 +34,7 @@ namespace TFTS.ViewModels
         {
             get => new Command(() =>
             {
-                App.Database.SaveRaceToRaceHistory(Race).Wait();
+                App.HistoryDatabase.SaveRaceToRaceHistory(Race).Wait();
             });
         }
         #endregion

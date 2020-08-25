@@ -13,7 +13,7 @@ namespace TFTS.ViewModels
         {
             get
             {
-                var GetRaceHistoryTask = App.Database.GetRaceHistory();
+                var GetRaceHistoryTask = App.HistoryDatabase.GetRaceHistory();
                 GetRaceHistoryTask.Wait();
                 var resList = GetRaceHistoryTask.Result;
                 resList.Reverse();
@@ -28,7 +28,7 @@ namespace TFTS.ViewModels
         { 
             get => new Command(() => 
             {
-                var ClearHistoryTask = App.Database.ClearHistory();
+                var ClearHistoryTask = App.HistoryDatabase.ClearHistory();
                 ClearHistoryTask.Wait();
                 OnPropertyChanged(nameof(Races));
             }); 
