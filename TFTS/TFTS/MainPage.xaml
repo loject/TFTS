@@ -8,6 +8,7 @@
 
     <StackLayout>
         <StackLayout VerticalOptions="CenterAndExpand">
+            <Button Text="Планы забегов" Command="{Binding GoToRacePlansCommand}"/>
             <Button Text="Забег" Command="{Binding GoToRaceCommand}"/>
             <Button Text="Табата" Command="{Binding GoToTobataCommand}"/>
             <Button Text="История" Command="{Binding GoToHistoryCommand}"/>

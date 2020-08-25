@@ -10,6 +10,16 @@ namespace TFTS.ViewModels
     {
         public MainPageViewModel()
         { }
+        public ICommand GoToRacePlansCommand
+        {
+            get => new Command(() =>
+            {
+                var PlanedRacesPageVM = new PlanedRacesPageViewModel();
+                var PlanedRacesPage = new PlanedRacesPageView();
+                PlanedRacesPage.BindingContext = PlanedRacesPageVM;
+                Application.Current.MainPage.Navigation.PushAsync(PlanedRacesPage);
+            });
+        }
         public ICommand GoToRaceCommand
         {
             get => new Command(() =>
