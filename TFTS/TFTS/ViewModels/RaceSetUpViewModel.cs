@@ -61,9 +61,9 @@ namespace TFTS.ViewModels
                     if (string.IsNullOrEmpty(ErrorStr))
                     {
                         /* TODO: optional open race view */
-                        var RaceVM = GetRaceViewModel();
+                        var RacePageVM = GetRacePageViewModel();
                         var RacePage = new RaceView();
-                        RacePage.BindingContext = RaceVM;
+                        RacePage.BindingContext = RacePageVM;
                         await Application.Current.MainPage.Navigation.PushAsync(RacePage);
                         Application.Current.MainPage.Navigation.RemovePage(Application.Current.MainPage.Navigation.NavigationStack[^2]);
                     }
@@ -78,11 +78,6 @@ namespace TFTS.ViewModels
                     await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
                     Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
                 }
-                catch
-                {
-                    /* TODO: log the error */
-                    Console.WriteLine("Error while executing - GoToRacePageCommand");
-                };
             });
         }
         #endregion
@@ -93,6 +88,21 @@ namespace TFTS.ViewModels
         private RaceViewModel GetRaceViewModel(RaceViewModel raceViewModel = null)
         {
             RaceViewModel raceVM = raceViewModel ?? new RaceViewModel(new RaceModel
+            {
+                Name = Name,
+                Distance = float.Parse(Distance),
+                LapLength = float.Parse(LapLength),
+            });
+            if (string.IsNullOrEmpty(Name)) raceVM.Name = DateTime.Now.ToString();
+            raceVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), raceVM.Race)).ToList();
+            return raceVM;
+        }
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        private RaceViewModel GetRacePageViewModel(RacePageViewModel racePageViewModel = null)
+        {
+            RacePageViewModel raceVM = racePageViewModel ?? new RacePageViewModel(new RaceModel
             {
                 Name = Name,
                 Distance = float.Parse(Distance),

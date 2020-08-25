@@ -1,17 +1,12 @@
 ﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using TFTS.misc;
 using TFTS.Models;
-using TFTS.Views;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
@@ -20,14 +15,10 @@ namespace TFTS.ViewModels
     {
         public RaceModel Race { get; set; }
         public SortableObservableCollection<RunnerViewModel> Runners { get => new SortableObservableCollection<RunnerViewModel>(Race.Runners?.Select(r => new RunnerViewModel(r, this)).ToList() ?? new List<RunnerViewModel>()); }
-        private Stopwatch timer_ = new Stopwatch();
 
         public string Name { get => Race.Name; set => Race.Name = value; }
         public float Distance { get => Race.Distance; set => Race.Distance = value; }
         public float LapsCount { get => Race.Distance / Race.LapLength; }
-        public TimeSpan TotalTime { get => timer_.Elapsed; }
-        public string TotalTimeStr { get => Utils.getStringFromTimeSpan(timer_.Elapsed); }
-        public bool IsRunning { get => timer_.IsRunning; }
         public float LapLength { get => Race.LapLength; set => Race.LapLength = value; }
         public bool UnevenLaps { get => Race.Distance % Race.LapLength != 0; }
         public string StartTime { get => Race.StartTime.ToString(); }
@@ -39,109 +30,16 @@ namespace TFTS.ViewModels
         }
         #endregion
         #region Commands
-        public ICommand StartStopCommand
+        public ICommand SaveRaceToDB
         {
             get => new Command(() =>
             {
-                try
-                {
-                    if (IsRunning)
-                    {
-                        timer_.Stop();
-                    }
-                    else
-                    {
-                        if (timer_.ElapsedMilliseconds == 0) Race.StartTime = DateTime.Now;
-                        timer_.Start();
-                        Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
-                        {
-                            OnPropertyChanged(nameof(TotalTime));
-                            OnPropertyChanged(nameof(TotalTimeStr));
-                            return timer_.IsRunning;
-                        });
-                    }
-                    OnPropertyChanged(nameof(IsRunning));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error - " + e.Message);
-                }
+                App.Database.SaveRaceToRaceHistory(Race).Wait();
             });
         }
-        public ICommand ResetCommand
-        {
-            get => new Command(async () =>
-            {
-                try
-                {
-                    bool choiceIsStop = await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Сброс", "Вы уверены?", "Да", "Нет");
-                    if (choiceIsStop == true)
-                    {
-                        Reset();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("error - " + e.Message);
-                }
-            });
-        }
-        public ICommand ExportCommand
-        {
-            get => new Command(() =>
-            {
-                try
-                {
-                    Share.RequestAsync(new ShareTextRequest(text: GetRaceResultCSV(), title: "Save results"));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error - " + e.Message);
-                }
-                catch
-                {
-                    Console.WriteLine("Error");
-                }
-            });
-        }
-        public ICommand ExportXLSXFileCommand
-        {
-            get => new Command(() =>
-            {
-                try
-                {
-                    var fn = "TFTS_" + Name + ".xlsx";
-                    var file = Path.Combine(FileSystem.CacheDirectory, fn);
-                    var xlsx = GetRaceResultXLSX();
-                    xlsx.Write(File.Create(file));
-                    Share.RequestAsync(new ShareFileRequest(file: new ShareFile(file), title: fn));
-                }
-                catch (Exception e)
-                {
-                    Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Error", e.Message, "OK");
-                }
-                catch
-                {
-                    /* TODO: error massage */
-                }
-            });
-        }
-        public ICommand ShowResultPageCommand { get => new Command(() => { Application.Current.MainPage.Navigation.PushModalAsync(new RaceResultsView(this.Race)); }); }
-        public ICommand SaveRaceToDB { get => new Command(() =>
-        {
-            App.Database.SaveRaceToRaceHistory(Race).Wait();
-        }); }
         #endregion
         #region misc
-        public void Reset()
-        {
-            timer_.Reset();
-            Race.Runners?.ForEach(r => r.Laps.Clear());
-            OnPropertyChanged(nameof(TotalTime));
-            OnPropertyChanged(nameof(TotalTimeStr));
-            OnPropertyChanged(nameof(IsRunning));
-        }
-        private string GetRaceResultCSV() /* TODO: delete this? */
+        public string GetRaceResultCSV() /* TODO: delete this? */
         {
             string separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
 

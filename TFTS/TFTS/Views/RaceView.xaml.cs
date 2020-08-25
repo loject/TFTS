@@ -8,9 +8,12 @@ namespace TFTS.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RaceView : ContentPage
     {
+        public RaceViewModel RaceViewModel { get; set; }
+        public RacePageViewModel RacePageViewModel { get; set; }
         public RaceView()
         {
             InitializeComponent();
+            BindingContext = this;
             /* add exit listener for save race to db*/
             (Application.Current.MainPage as NavigationPage).Popped += SaveRaceToDB;
         }
