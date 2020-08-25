@@ -1,5 +1,6 @@
 ﻿using PropertyChanged;
 using System.Windows.Input;
+using TFTS.Views;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
@@ -7,37 +8,43 @@ namespace TFTS.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class MainPageViewModel
     {
-        public INavigation Navigation { get; private set; }
-        public MainPageViewModel(INavigation navigation)
-        {
-            Navigation = navigation;
-        }
+        public MainPageViewModel()
+        { }
         public ICommand GoToRaceCommand
         {
             get => new Command(() =>
             {
-                new RaceSetUpViewModel(Navigation);
+                var RaceSetUpVM = new RaceSetUpViewModel();
+                var RaceSetUpPage = new RaceSetUpView();
+                RaceSetUpPage.BindingContext = RaceSetUpVM;
+                Application.Current.MainPage.Navigation.PushAsync(RaceSetUpPage);
             });
         }
         public ICommand GoToTobataCommand
         {
             get => new Command(async () =>
             {
-                await Navigation.NavigationStack[^1].DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
+                await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Warning", message: "Currently not implemented", cancel: "cancel");
             });
         }
         public ICommand GoToHistoryCommand
         {
             get => new Command(() =>
             {
-                new HistoryViewModel(Navigation);
+                var HistoryVM = new HistoryViewModel();
+                var HistoryPage = new HistoryPageView();
+                HistoryPage.BindingContext = HistoryVM;
+                Application.Current.MainPage.Navigation.PushAsync(HistoryPage);
             });
         }
         public ICommand GoToSettingsCommand
         {
             get => new Command(() =>
             {
-                new SettingsViewModel(Navigation);
+                var SettingsVM = new SettingsViewModel();
+                var SettingsPage = new SettingView();
+                SettingsPage.BindingContext = SettingsVM;
+                Application.Current.MainPage.Navigation.PushAsync(SettingsPage);
             });
         }
     }

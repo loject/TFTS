@@ -19,12 +19,13 @@ namespace TFTS.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class RaceSetUpViewModel
     {
+        private string _raceName { get; set; } = DateTime.Now.ToString();
         private string _distance { get; set; } = "1500";
         private string _lapLength { get; set; } = "200";
-        private INavigation Navigation;
+
         public ObservableCollection<SimpleRunner> Runners { get; private set; }
-        public RaceViewModel Race { get; private set; }
-        public string Name { get => Race.Race.Name; set => Race.Race.Name = value; }
+        //public RaceViewModel Race { get; private set; }
+        public string Name { get => _raceName; set => _raceName = value; }
         public string Distance
         {
             get => _distance;
@@ -36,33 +37,14 @@ namespace TFTS.ViewModels
         }
         public string LapLength { get => _lapLength; set => _lapLength = value; }
 
-        public RaceSetUpViewModel(INavigation navigation, RaceViewModel race = null)
+        public RaceSetUpViewModel(/*RaceViewModel race = null*/)
         {
-            if (race != null)
+            /* TODO: adaptive to race edition */
+            Runners = new ObservableCollection<SimpleRunner>
             {
-                Race = race;
-                Runners = new ObservableCollection<SimpleRunner>();
-                foreach (var runner in race.Race.Runners)
-                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.TotalDistance.ToString() });
-            }
-            else
-            {
-                Race = new RaceViewModel(navigation)
-                {
-                    Race = new RaceModel { Distance = 1500, LapLength = 200 },
-                };
-                Runners = new ObservableCollection<SimpleRunner>
-                {
-                    new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
-                };
-            }
-
-            Distance = Race.Distance.ToString();
-            LapLength = Race.LapLength.ToString();
-
-            Navigation = navigation;
-            Navigation.PushAsync(new RaceSetUpView(this));
+                new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
+                new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
+            };
         }
         #region Commands
         public ICommand AddNewRunnerCommand
@@ -78,31 +60,57 @@ namespace TFTS.ViewModels
                     string ErrorStr = Validate();
                     if (string.IsNullOrEmpty(ErrorStr))
                     {
-                        Race.Reset();
-                        Race.Distance = float.Parse(Distance);
-                        Race.LapLength = float.Parse(LapLength);
-                        if (string.IsNullOrEmpty(Name)) Name = DateTime.Now.ToString();
-                        Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
-                        Race.OnPropertyChanged(nameof(Runners));/* TODO: fix this */
-                        await Navigation.PopAsync(true);
+                        /* TODO: optional open race view */
+                        var RacePageVM = GetRacePageViewModel();
+                        var RacePage = new RaceView();
+                        RacePage.BindingContext = RacePageVM;
+                        await Application.Current.MainPage.Navigation.PushAsync(RacePage);
+                        Application.Current.MainPage.Navigation.RemovePage(Application.Current.MainPage.Navigation.NavigationStack[^2]);
                     }
                     else
                     {
-                        await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
+                        await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
                     }
                 }
                 catch (Exception e)
                 {
                     /* TODO: log the error */
-                    await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
+                    await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
                     Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
                 }
-                catch
-                {
-                    /* TODO: log the error */
-                    Console.WriteLine("Error while executing - GoToRacePageCommand");
-                };
             });
+        }
+        #endregion
+        #region Functions
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        private RaceViewModel GetRaceViewModel(RaceViewModel raceViewModel = null)
+        {
+            RaceViewModel raceVM = raceViewModel ?? new RaceViewModel(new RaceModel
+            {
+                Name = Name,
+                Distance = float.Parse(Distance),
+                LapLength = float.Parse(LapLength),
+            });
+            if (string.IsNullOrEmpty(Name)) raceVM.Name = DateTime.Now.ToString();
+            raceVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), raceVM.Race)).ToList();
+            return raceVM;
+        }
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        private RaceViewModel GetRacePageViewModel(RacePageViewModel racePageViewModel = null)
+        {
+            RacePageViewModel raceVM = racePageViewModel ?? new RacePageViewModel(new RaceModel
+            {
+                Name = Name,
+                Distance = float.Parse(Distance),
+                LapLength = float.Parse(LapLength),
+            });
+            if (string.IsNullOrEmpty(Name)) raceVM.Name = DateTime.Now.ToString();
+            raceVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), raceVM.Race)).ToList();
+            return raceVM;
         }
         #endregion
         #region misc
