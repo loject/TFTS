@@ -10,6 +10,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить забег" Command="{Binding AddRaceToPlanCommand}"  Priority="1" Order="Secondary"/>
         <ToolbarItem Text="Отчистить все планы" Command="{Binding ClearAllPlansCommand}"  Priority="1" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>

@@ -23,10 +23,9 @@ namespace TFTS.ViewModels
         public PlanedRacesPageViewModel()
         { }
         #region Commands
-        public ICommand ShowResultPageCommand { get => new Command<RaceModel>(Race => 
-        { 
-            /* TODO: edit this */
-            Application.Current.MainPage.Navigation.PushModalAsync(new RaceResultsView(Race)); 
+        public ICommand AddRaceToPlanCommand { get => new Command<RaceModel>(Race => 
+        {
+
         }); }
         public ICommand ClearAllPlansCommand
         {

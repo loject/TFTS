@@ -20,11 +20,18 @@ namespace TFTS.ViewModels
                 Application.Current.MainPage.Navigation.PushAsync(PlanedRacesPage);
             });
         }
-        public ICommand GoToRaceCommand
+        public ICommand GoToRacePageCommand
         {
             get => new Command(() =>
             {
                 var RaceSetUpVM = new RaceSetUpViewModel();
+                RaceSetUpVM.ActionAfterEditing = RaceSetUpVM =>
+                {
+                    var RacePageVM = RaceSetUpVM.GetRacePageViewModel();
+                    var RacePage = new RaceView();
+                    RacePage.BindingContext = RacePageVM;
+                    Application.Current.MainPage.Navigation.PushAsync(RacePage);
+                };
                 var RaceSetUpPage = new RaceSetUpView();
                 RaceSetUpPage.BindingContext = RaceSetUpVM;
                 Application.Current.MainPage.Navigation.PushAsync(RaceSetUpPage);

@@ -168,4 +168,5 @@ namespace TFTS.ViewModels
  * Move to end finshed runners option in settings set isEnabled
  * Add posibiliti to save race after each lapDone
  * add loging
+ * fix Runners
  */
