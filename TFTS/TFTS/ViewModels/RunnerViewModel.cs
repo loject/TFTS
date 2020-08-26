@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ namespace TFTS.ViewModels
     {
         public RunnerModel Runner { get; private set; }
         public RaceViewModel Race { get; private set; }/* for update when sort */
-        public string Name { get { return Runner.Name; } set { Runner.Name = value; OnPropertyChanged(nameof(Name)); } }
+        public string Name { get => Runner.Name; set => Runner.Name = value;  }
 
         public RunnerViewModel(RunnerModel runner, RaceViewModel race)
         {
@@ -36,10 +37,6 @@ namespace TFTS.ViewModels
             get => new Command<TimeSpan>((TimeSpan now) =>
             {
                 Runner.LapDone(now);
-                OnPropertyChanged(nameof(LapsLeft));
-                OnPropertyChanged(nameof(LapsOvercome));
-                OnPropertyChanged(nameof(BestLapTime));
-                OnPropertyChanged(nameof(LastLapTime));
                 Race.OnPropertyChanged("Runners");
             });
         }
@@ -47,7 +44,7 @@ namespace TFTS.ViewModels
         {
             get => new Command<RunnerViewModel>((RunnerViewModel runner) => 
             { 
-                Race.Navigation.PushModalAsync(new RunnerResultView(runner, Race.StartTime.ToString(), Runner.TotalDistance.ToString())); 
+                //Race.Navigation.PushModalAsync(new RunnerResultView(runner, Race.StartTime.ToString(), Runner.TotalDistance.ToString())); 
             });
         }
         public ICommand DeleteLapCommand
@@ -65,10 +62,6 @@ namespace TFTS.ViewModels
             try
             {
                 Runner.Laps.RemoveAt(index);
-                OnPropertyChanged(nameof(LapsLeft));
-                OnPropertyChanged(nameof(LapsOvercome));
-                OnPropertyChanged(nameof(BestLapTime));
-                OnPropertyChanged(nameof(LastLapTime));
             }
             catch (Exception e)
             {
@@ -84,10 +77,6 @@ namespace TFTS.ViewModels
             try
             {
                 Runner.Laps.Clear();
-                OnPropertyChanged(nameof(LapsLeft));
-                OnPropertyChanged(nameof(LapsOvercome));
-                OnPropertyChanged(nameof(BestLapTime));
-                OnPropertyChanged(nameof(LastLapTime));
             }
             catch (Exception e)
             {

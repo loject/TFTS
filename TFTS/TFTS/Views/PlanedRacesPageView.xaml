@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:Converters="clr-namespace:TFTS.Converters"
-             Title="История"
-             x:Name="HistoryPageViewName"
-             x:Class="TFTS.Views.HistoryPageView">
+             Title="Планы забегов"
+             x:Name="PlanedRacesPageViewName"
+             x:Class="TFTS.Views.PlanedRacesPageView">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Converters:ConcatRunnersNamesConverter x:Key="ConcatRunnersNamesConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Clear history" Command="{Binding ClearHistoryCommand}"  Priority="1" Order="Secondary"/>
+        <ToolbarItem Text="Добавить забег" Command="{Binding AddRaceToPlanCommand}"  Priority="1" Order="Secondary"/>
+        <ToolbarItem Text="Отчистить все планы" Command="{Binding ClearAllPlansCommand}"  Priority="1" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView x:Name="HistoryPageViewNameScrollView">
@@ -29,7 +29,7 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding StartTime}" 
+                            <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" 
                                         HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontAttributes="Bold" FontSize="Subtitle"/>
                             <Label Grid.Row="0" Grid.Column="1" HorizontalOptions="End">
                                 <Label.Text>
@@ -41,14 +41,16 @@
                             </Label>
                             <Label Grid.Row="1" Grid.Column="0" Text="{Binding Runners, Converter={StaticResource ConcatRunnersNamesConverter}}" 
                                         HorizontalOptions="StartAndExpand"/>
-                            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="Результаты" 
-                                        Command="{Binding Source={x:Reference HistoryPageViewName}, Path=BindingContext.ShowResultPageCommand}"
-                                        CommandParameter="{Binding }" />
+                            <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="На старт" 
+                                        Command="{Binding Source={x:Reference PlanedRacesPageViewName}, Path=BindingContext.GoToRacePage}"
+                                        CommandParameter="{Binding}" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Label Text="История пуста" VerticalOptions="Center" HorizontalOptions="Center" />
+                    <StackLayout>
+                        <Label Text="Планов нет " VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                    </StackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>
         </ScrollView>

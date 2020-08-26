@@ -1,14 +1,15 @@
 ﻿using SQLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TFTS.Models;
 
-namespace TFTS.Models
+namespace TFTS.Databases
 {
-    public class Database
+    public class HistoryDatabase
     {
         readonly SQLiteAsyncConnection _database;
 
-        public Database(string dbPath)
+        public HistoryDatabase(string dbPath)
         {
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<RaceModel>().Wait();

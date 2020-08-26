@@ -44,7 +44,7 @@
             </Style>
             <DataTemplate x:Key="LapDoneBySwipeOn">
                 <ViewCell>
-                    <SwipeView BackgroundColor="{Binding ., Converter={StaticResource RunnerPositionToColorConverter}}">
+                    <SwipeView BackgroundColor="{Binding Converter={StaticResource RunnerPositionToColorConverter}}">
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Круг пройден" BackgroundColor="LightGreen" 

@@ -14,17 +14,9 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView Orientation="Both" Padding="4">
-            <StackLayout>
+            <StackLayout x:Name="layout">
                 <Label Text="{Binding Distance, StringFormat='Дистанция {0} метров'}" />
                 <Label Text="{Binding StartTime, StringFormat='Старт {0}'}" />
-                <Grid x:Name="grid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

@@ -1,135 +1,122 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-using TFTS.misc;
 using TFTS.Models;
 using TFTS.Views;
 using Xamarin.Forms;
 
 namespace TFTS.ViewModels
 {
-    public class SimpleRunner : INotifyPropertyChanged
+    [AddINotifyPropertyChangedInterface]
+    public class SimpleRunner
     {
-        private string _name;
-        private string _distance;
-        public string Name 
-        { 
-            get => _name; 
-            set
-            {
-                _name = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
+        public string Name { get; set; }
+        public string Distance { get; set; }
+    }
+    [AddINotifyPropertyChangedInterface]
+    public class RaceSetUpViewModel
+    {
+        private string _raceName { get; set; } = DateTime.Now.ToString();
+        private string _distance { get; set; } = "1500";
+        private string _lapLength { get; set; } = "200";
+
+        public ObservableCollection<SimpleRunner> Runners { get; private set; }
+        public RaceViewModel Race { get; private set; }
+        public string Name { get => _raceName; set => _raceName = value; }
         public string Distance
         {
             get => _distance;
             set
             {
+                foreach (SimpleRunner i in Runners) if (i.Distance == Distance) i.Distance = value;
                 _distance = value;
-                OnPropertyChanged(nameof(Distance));
             }
         }
-        #region INotifyPropertyChanged interface implement
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        #endregion
-    }
-    public class RaceSetUpViewModel : INotifyPropertyChanged
-    {
-        private string _distance = "1500";
-        private string _lapLength = "200";
+        public string LapLength { get => _lapLength; set => _lapLength = value; }
+        public Action<RaceSetUpViewModel> ActionAfterEditing { get; set; }
 
-        private INavigation Navigation;
-        public ObservableCollection<SimpleRunner> Runners { get; private set; }
-        public RaceViewModel Race { get; private set; }
-        public string Distance 
-        { 
-            get => _distance;  
-            set
-            {
-                foreach (var i in Runners) if (i.Distance == _distance) i.Distance = value;
-                _distance = value;
-                OnPropertyChanged(nameof(Distance));
-            }
-        }
-        public string LapLength
+        public RaceSetUpViewModel(RaceViewModel RaceVM = null, Action<RaceSetUpViewModel> DoAfterRaceEditionDone = null)
         {
-            get => _lapLength;
-            set
+            Runners = RaceVM != null 
+                ? new ObservableCollection<SimpleRunner>(RaceVM.Race.Runners.Select(r => new SimpleRunner { Name = r.Name, Distance = r.TotalDistance.ToString()}).ToList())
+                : new ObservableCollection<SimpleRunner>
             {
-                _lapLength = value;
-                OnPropertyChanged(nameof(Distance));
-            }
-        }
-
-        public RaceSetUpViewModel(INavigation navigation, RaceViewModel race = null)
-        {
-            if (race != null)
-            {
-                Race = race;
-                Runners = new ObservableCollection<SimpleRunner>();
-                foreach (var runner in race.Race.Runners)
-                    Runners.Add(new SimpleRunner { Name = runner.Name, Distance = runner.TotalDistance.ToString() });
-            }
-            else
-            {
-                Race = new RaceViewModel(navigation);
-                Runners = new ObservableCollection<SimpleRunner>
-                {
-                    new SimpleRunner{ Name = "Runner", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner1", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner2", Distance = Distance.ToString() },
-                    new SimpleRunner{ Name = "Runner3", Distance = Distance.ToString() },
-                };
-            }
-
-            Navigation = navigation;
-            Navigation.PushAsync(new RaceSetUpView(this));
+                new SimpleRunner{ Name = "0", Distance = Distance.ToString() },
+                new SimpleRunner{ Name = "1", Distance = Distance.ToString() },
+            };
+            Race = RaceVM;
+            ActionAfterEditing = DoAfterRaceEditionDone;
         }
         #region Commands
         public ICommand AddNewRunnerCommand
         {
-            get => new Command(() => Runners.Add(new SimpleRunner { Name = "Runner" + Runners.Count.ToString(), Distance = Distance.ToString() }));
+            get => new Command(() => Runners.Add(new SimpleRunner { Name = Runners.Count.ToString(), Distance = Distance.ToString() }));
         }
-        public ICommand RaceEditingDoneCommand
+        public ICommand RaceEditingDoneCommand { get; set; } = new Command<RaceSetUpViewModel>(async (RaceSetUpViewModel RaceSetUpVM) =>
         {
-            get => new Command(async () =>
+            try
             {
-                try
+                string ErrorStr = RaceSetUpVM.Validate();
+                if (string.IsNullOrEmpty(ErrorStr))
                 {
-                    string ErrorStr = Validate();
-                    if (string.IsNullOrEmpty(ErrorStr))
+                    if (RaceSetUpVM.ActionAfterEditing != null)
                     {
-                        Race.Reset();
-                        Race.Distance = float.Parse(Distance);
-                        Race.LapLength = float.Parse(LapLength);
-                        Race.Race.Runners = Runners.Select(runner => new RunnerModel(runner.Name, float.Parse(runner.Distance), Race.Race)).ToList();
-                        Race.OnPropertyChanged(nameof(Runners));
-                        await Navigation.PopAsync(true);
+                        var tmp = Application.Current.MainPage.Navigation.NavigationStack[^1];/* TODO: fix crutch. possible errors */
+                        RaceSetUpVM.ActionAfterEditing.Invoke(RaceSetUpVM);
+                        Application.Current.MainPage.Navigation.RemovePage(tmp);
                     }
                     else
                     {
-                        await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
+                        await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", "Неизвестная ошибка", "Окей");
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    /* TODO: log the error */
-                    await Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
-                    Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
+                    await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", ErrorStr, "Окей");
                 }
-                catch
-                {
-                    /* TODO: log the error */
-                    Console.WriteLine("Error while executing - GoToRacePageCommand");
-                };
-            });
+            }
+            catch (Exception e)
+            {
+                /* TODO: log the error */
+                await Application.Current.MainPage.Navigation.NavigationStack[^1].DisplayAlert("Ошибка", e.Message, "Окей");
+                Console.WriteLine("Error while executing - GoToRacePageCommand - " + e.Message);
+            }
+        },
+        (RaceSetUpViewModel RaceSetUpVM) =>/* TODO: fix this */
+        {
+            string ErrorStr = RaceSetUpVM?.Validate();
+            return string.IsNullOrEmpty(ErrorStr);
+        });
+        #endregion
+        #region Functions
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        public RaceViewModel GetRaceViewModel(RaceViewModel raceViewModel = null)
+        {
+            RaceViewModel raceVM = raceViewModel ?? new RaceViewModel(new RaceModel { });
+            raceVM.Race.Name = string.IsNullOrEmpty(Name) ? DateTime.Now.ToString() : Name;
+            raceVM.Race.Distance = float.Parse(Distance);
+            raceVM.Race.LapLength = float.Parse(LapLength);
+
+            raceVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), raceVM.Race)).ToList();
+            return raceVM;
+        }
+        /**
+         * Update viewModel if it pass, create new if it null
+         * */
+        public RaceViewModel GetRacePageViewModel(RacePageViewModel racePageViewModel = null)
+        {
+            RacePageViewModel racePageVM = racePageViewModel ?? new RacePageViewModel(new RaceModel { });
+            racePageVM.Race.Name = string.IsNullOrEmpty(Name) ? DateTime.Now.ToString() : Name;
+            racePageVM.Race.Distance = float.Parse(Distance);
+            racePageVM.Race.LapLength = float.Parse(LapLength);
+
+            racePageVM.Race.Runners = Runners.Select(r => new RunnerModel(r.Name, float.Parse(r.Distance), racePageVM.Race)).ToList();
+            return racePageVM;
         }
         #endregion
         #region misc
@@ -190,13 +177,6 @@ namespace TFTS.ViewModels
             return ErrorStr;
         }
         public bool IndividualDistance { get => SettingsModel.IndividualDistance; }
-        #endregion
-        #region INotifyPropertyChanged interface implement
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
         #endregion
     }
 }

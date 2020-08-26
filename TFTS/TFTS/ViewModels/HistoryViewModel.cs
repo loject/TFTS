@@ -9,28 +9,26 @@ namespace TFTS.ViewModels
 {
     public class HistoryViewModel : INotifyPropertyChanged
     {
-        public INavigation Navigation;
         public List<RaceModel> Races 
         {
             get
             {
-                var GetRaceHistoryTask = App.Database.GetRaceHistory();
+                var GetRaceHistoryTask = App.HistoryDatabase.GetRaceHistory();
                 GetRaceHistoryTask.Wait();
-                return GetRaceHistoryTask.Result;
+                var resList = GetRaceHistoryTask.Result;
+                resList.Reverse();
+                return resList;
             }
         } 
-        public HistoryViewModel(INavigation navigation = null)
-        {
-            Navigation = navigation;
-            Navigation?.PushAsync(new HistoryPageView(this));
-        }
+        public HistoryViewModel()
+        { }
         #region Commands
-        public ICommand ShowResultPageCommand { get => new Command<RaceModel>(Race => { Navigation.PushModalAsync(new RaceResultsView(Race)); }); }
+        public ICommand ShowResultPageCommand { get => new Command<RaceModel>(Race => { Application.Current.MainPage.Navigation.PushModalAsync(new RaceResultsView(Race)); }); }
         public ICommand ClearHistoryCommand 
         { 
             get => new Command(() => 
-            { 
-                var ClearHistoryTask = App.Database.ClearHistory();
+            {
+                var ClearHistoryTask = App.HistoryDatabase.ClearHistory();
                 ClearHistoryTask.Wait();
                 OnPropertyChanged(nameof(Races));
             }); 
