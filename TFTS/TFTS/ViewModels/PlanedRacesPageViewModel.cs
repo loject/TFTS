@@ -30,6 +30,7 @@ namespace TFTS.ViewModels
             {
                 var RaceVM = RaceSetUpVM.GetRaceViewModel();
                 App.PlanDatabase.SaveRaceToRacePlan(RaceVM.Race);
+                OnPropertyChanged(nameof(Races));
             };
             var RaceSetUpPage = new RaceSetUpView();
             RaceSetUpPage.BindingContext = RaceSetUpVM;
@@ -37,9 +38,21 @@ namespace TFTS.ViewModels
         }); }
         public ICommand GoToRacePage
         {
-            get => new Command(() =>
+            get => new Command<RaceModel>(Race =>
             {
-                /* incoming */
+                var RaceSetUpVM = new RaceSetUpViewModel(new RaceViewModel(Race));
+                RaceSetUpVM.ActionAfterEditing = RaceSetUpVM =>
+                {
+                    var RacePageVM = RaceSetUpVM.GetRacePageViewModel();
+                    var RacePage = new RaceView();
+                    RacePage.BindingContext = RacePageVM;
+                    Application.Current.MainPage.Navigation.PushAsync(RacePage);
+                    App.PlanDatabase.RemoveRaceFromPlans(RacePageVM.Race).Wait();
+                    OnPropertyChanged(nameof(Races));
+                };
+                var RaceSetUpPage = new RaceSetUpView();
+                RaceSetUpPage.BindingContext = RaceSetUpVM;
+                Application.Current.MainPage.Navigation.PushAsync(RaceSetUpPage);
             });
         }
         public ICommand ClearAllPlansCommand
