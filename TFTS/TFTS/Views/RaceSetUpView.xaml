@@ -59,7 +59,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="+" Command="{Binding AddNewRunnerCommand}" HorizontalOptions="Center" />
-            <Button Text="Готово" Command="{Binding RaceEditingDoneCommand}" HorizontalOptions="FillAndExpand"/>
+            <Button Text="Готово" Command="{Binding RaceEditingDoneCommand}" CommandParameter="{Binding}" HorizontalOptions="FillAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
